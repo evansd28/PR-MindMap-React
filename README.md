@@ -6,7 +6,7 @@
 5. Website should be running locally
 
 # TODO
-
+**Note: Anything crossed off means its complete**
 * Implement a video player for youtube videos
 * Allow for saving/loading mindmaps locally
 * ~~Put most things into components instead of cramming it in one app.tsx file~~

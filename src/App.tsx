@@ -17,7 +17,6 @@ interface Node {
 }
 
 export default function App() {
-  //const [nodeType, setNodeType] = useState<string>("value");
   const [nodes, setNodes] = useState<Node[]>([]);
   const [activeNodeId, setActiveNodeId] = useState<string | undefined>();
 

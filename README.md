@@ -16,3 +16,4 @@
 * Instad of cramming edit features as part of the node, have it so that clicking on a node will allow you to make edits
 * Make it look prettier
 * An about section that informs the user on how to use the mind map
+* Adding tabs

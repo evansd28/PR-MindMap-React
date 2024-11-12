@@ -17,4 +17,5 @@
 * Instad of cramming edit features as part of the node, have it so that clicking on a node will allow you to make edits (WIP)
 * Make it look prettier
 * An about section that informs the user on how to use the mind map
-* Adding tabs
+* Adding tabs for the creation of other mind maps on the same page
+* Add a context file

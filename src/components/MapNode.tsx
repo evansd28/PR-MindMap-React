@@ -1,3 +1,5 @@
+import { useState } from "react";
+
 interface Node {
     id: string;
     position: { x: number, y: number };
@@ -12,14 +14,22 @@ interface Node {
 export default function MapNode({
     node,
     handleAddMedia,
-    removeNode
+    removeNode,
+    setVideo,
+    setVideoPlayer
 }: {
     node: Node;
     handleAddMedia: (e: React.MouseEvent<HTMLButtonElement>, nodeId: string) => void;
     removeNode: (e: React.MouseEvent<HTMLButtonElement>, nodeId: string) => void;
+    setVideo: (display: string) => void;
+    setVideoPlayer: (display: boolean) => void;
 }) {
+
     return (
-        <div>
+        <div onClick={(e) => {
+            e.stopPropagation();
+            console.log("node clicked")
+        }}>
             <div
                 key={node.id}
                 className={`absolute flex flex-col items-center justify-center rounded-full text-center p-4 border-2 border-black`}
@@ -38,6 +48,7 @@ export default function MapNode({
                     node.nodeType === 'asset' &&
                     // hide the 'add media' button if there is already an image inside teh node
                     !node.image && !node.text &&
+                    !node.video &&
                     <button
                         className='border-2 border-gray-500 rounded-xl p-1 text-center mt-1'
                         onClick={(e) =>
@@ -49,7 +60,7 @@ export default function MapNode({
                 }
                 {
                     // add the image
-                    node.image && 
+                    node.image &&
                     <div className='py-2'>
                         <img
                             src={node.image}
@@ -62,14 +73,19 @@ export default function MapNode({
                     // add the video
                     node.video &&
                     <div className='py-2'>
-                        <iframe
-                            src={node.video}
-                            className='rounded-xl'
-                            title="node video"
-                        />
+                        <button
+                            className=""
+                            onClick={() => {
+                                setVideo(node.video)
+                                setVideoPlayer(true);
+                            }}
+                        >
+                            Watch Video
+                        </button>
                     </div>
                 }
-                {/* button to remove the node */}
+                {/* button to remove the node
+                This is gonna get replaced later. Just having it for now */}
                 <button
                     className='bg-red-500 p-2 text-white rounded-xl my-2'
                     onClick={(e) => removeNode(e, node.id)}

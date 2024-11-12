@@ -5,6 +5,7 @@ import AddMediaDisplay from './components/AddMediaDisplay';
 import ImageSelectionDisplay from './components/ImageSelectionDisplay';
 import Canvas from './components/Canvas';
 import NewNodeDisplay from './components/NewNodeDisplay';
+import VideoPlayer from './components/VideoPlayer';
 
 interface Node {
   id: string;
@@ -23,10 +24,11 @@ export default function App() {
   const [newNodeDisplay, setNewNodeDisplay] = useState<boolean>(false);
   const [mediaDisplay, setMediaDisplay] = useState<boolean>(false);
   const [imageSelectionDisplay, setImageSelectionDisplay] = useState<boolean>(false);
+  const [videoPlayer, setVideoPlayer] = useState<boolean>(false);
 
   const [mousePosition, setMousePosition] = useState<number[]>([0, 0])
 
-  const [video, setVideo] = useState<string | null>(null);
+  const [video, setVideo] = useState<string | undefined>();
 
   useEffect(() => {
     console.log(nodes);
@@ -95,6 +97,7 @@ export default function App() {
       return node;
     })
     setNodes(updatedNodes);
+    setMediaDisplay(false);
   }
 
   const removeNode = (e: React.MouseEvent<HTMLButtonElement>, nodeId: string) => {
@@ -115,6 +118,8 @@ export default function App() {
           getNodePosition={getNodePosition}
           handleAddMedia={handleAddMedia}
           removeNode={removeNode}
+          setVideo={setVideo}
+          setVideoPlayer={setVideoPlayer}
         />
         {mediaDisplay &&
           <div
@@ -155,6 +160,12 @@ export default function App() {
               setNewNodeDisplay={setNewNodeDisplay}
             />
           </div>
+        }
+        {videoPlayer &&
+          <VideoPlayer
+            video={video}
+            setVideoPlayer={setVideoPlayer}
+          />
         }
       </main>
     </>

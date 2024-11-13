@@ -1,22 +1,6 @@
-import { useEffect, useState } from "react";
-
-interface Node {
-    id: string;
-    position: { x: number, y: number };
-    nodeType: string;
-    borderColor: string;
-    text: string;
-    image: string;
-    video: string;
-}
-
-interface NewNodeDisplayProps {
-    nodes: Node[];
-    addNodeToCanvas: (nodeType: string | undefined, nodeText: string | undefined, mousePosition: number[]) => void;
-    mousePosition: number[];
-    setImageSelectionDisplay: (display: boolean) => void; 
-    setNewNodeDisplay: (display: boolean) => void; 
-}
+import { useState } from "react";
+import { Node, NewNodeDisplayProps } from "../Types/types";
+import { useAppContext } from "../context/Context";
 
 export default function NewNodeDisplay({ 
     nodes, 
@@ -24,14 +8,16 @@ export default function NewNodeDisplay({
     mousePosition, 
     setNewNodeDisplay 
 }: NewNodeDisplayProps) {
-    const [newNodeType, setNewNodeType] = useState<string | undefined>("");
+    const [newNodeType, setNewNodeType] = useState<string | undefined>("value");
     const [nodeText, setNodeText] = useState<string | undefined>("");
-    const [nodeToConnectTo, setNodeToConnectTo] = useState<Node>();
-    const [assetText, setAssetText] = useState<boolean>(false)
+    const [assetText, setAssetText] = useState<boolean>(false);
+
+    const { roleNodes } = useAppContext();
+    const [nodeToConnectTo, setNodeToConnectTo] = useState<Node>(roleNodes[0]);
 
     const addAssetImage = () => {
         setNewNodeDisplay(false);
-        addNodeToCanvas(newNodeType, nodeText, mousePosition)
+        addNodeToCanvas(newNodeType, nodeText, mousePosition, nodeToConnectTo)
     }
 
     return (
@@ -56,7 +42,7 @@ export default function NewNodeDisplay({
                     />
                     <button
                         className="mt-2 bg-green-500 text-white p-2 rounded-xl w-1/2 m-auto"
-                        onClick={() => addNodeToCanvas(newNodeType, nodeText, mousePosition)}
+                        onClick={() => addNodeToCanvas(newNodeType, nodeText, mousePosition, nodeToConnectTo)}
                     >
                         Add Node
                     </button>
@@ -85,9 +71,17 @@ export default function NewNodeDisplay({
                 <div>
                     <h1>Connect To Node:</h1>
                     <select
-                        onChange={(e) => setNodeToConnectTo(nodes.find(node => node.text === e.target.value))}
+                        className="text-black p-2 my-2 rounded"
+                        onChange={(e) => {
+                            const selectedNode = roleNodes.find(node => node.text === e.target.value);
+                            console.log("selected node", selectedNode)
+                            if (selectedNode) {
+                                setNodeToConnectTo(selectedNode);
+                                console.log("connected to", nodeToConnectTo);
+                            }
+                        }}
                     >
-                        {nodes.map((node: Node) => {
+                        {roleNodes.map((node: Node) => {
                             return (
                                 <option key={node.id}>{node.text}</option>
                             )
@@ -106,7 +100,7 @@ export default function NewNodeDisplay({
                     />
                     <button
                         className="mt-2 bg-green-500 text-white p-2 rounded-xl w-1/2 m-auto"
-                        onClick={() => addNodeToCanvas(newNodeType, nodeText, mousePosition)}
+                        onClick={() => addNodeToCanvas(newNodeType, nodeText, mousePosition, nodeToConnectTo)}
                     >
                         Add Node
                     </button>

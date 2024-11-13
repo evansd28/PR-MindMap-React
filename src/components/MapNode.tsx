@@ -1,29 +1,22 @@
-import { useState } from "react";
-
-interface Node {
-    id: string;
-    position: { x: number, y: number };
-    nodeType: string;
-    borderColor: string;
-    text: string;
-    image: string;
-    video: string;
-}
-
+import { useAppContext } from "../context/Context";
+import { MapNodeProps } from "../Types/types";
 
 export default function MapNode({
     node,
     handleAddMedia,
-    removeNode,
-    setVideo,
-    setVideoPlayer
-}: {
-    node: Node;
-    handleAddMedia: (e: React.MouseEvent<HTMLButtonElement>, nodeId: string) => void;
-    removeNode: (e: React.MouseEvent<HTMLButtonElement>, nodeId: string) => void;
-    setVideo: (display: string) => void;
-    setVideoPlayer: (display: boolean) => void;
-}) {
+    removeNode
+}: MapNodeProps) {
+    const { setVideo, setVideoPlayer } = useAppContext();
+
+    const getBorderColor = (nodeType: string) => {
+        if(nodeType === 'value') {
+            return '#ff002f'
+        } else if (nodeType === 'role') {
+            return '#0077ff'
+        } else {
+            return '#77ff00'
+        }
+    }
 
     return (
         <div onClick={(e) => {
@@ -32,11 +25,9 @@ export default function MapNode({
         }}>
             <div
                 key={node.id}
-                className={`absolute flex flex-col items-center justify-center rounded-full text-center p-4 border-2 border-black`}
-                style={{ left: node.position.x, top: node.position.y, borderColor: node.borderColor }}
+                className={`absolute flex flex-col items-center justify-center rounded-full text-center p-4 border-2`}
+                style={{ left: node.position.x, top: node.position.y, borderColor: getBorderColor(node.nodeType) }}
             >
-                {/* list node type */}
-                <h1 className='font-semibold'>{node.nodeType}</h1>
                 {
                     // hide the input if the node has an image
                     !node.image &&
@@ -87,7 +78,7 @@ export default function MapNode({
                 {/* button to remove the node
                 This is gonna get replaced later. Just having it for now */}
                 <button
-                    className='bg-red-500 p-2 text-white rounded-xl my-2'
+                    className='bg-red-500 p-1 text-white rounded-xl my-1'
                     onClick={(e) => removeNode(e, node.id)}
                 >
                     Remove

@@ -6,47 +6,66 @@ import ImageSelectionDisplay from './components/ImageSelectionDisplay';
 import Canvas from './components/Canvas';
 import NewNodeDisplay from './components/NewNodeDisplay';
 import VideoPlayer from './components/VideoPlayer';
-
-interface Node {
-  id: string;
-  position: { x: number, y: number };
-  nodeType: string;
-  borderColor: string;
-  text: string;
-  image: string;
-  video: string;
-}
+import { Node } from './Types/types';
+import { useAppContext } from './context/Context';
 
 export default function App() {
-  const [nodes, setNodes] = useState<Node[]>([]);
-  const [activeNodeId, setActiveNodeId] = useState<string | undefined>();
+  //const [nodes, setNodes] = useState<Node[]>([]);
+  //const [activeNodeId, setActiveNodeId] = useState<string | undefined>();
+
+  const {
+    nodes,
+    setNodes,
+    activeNodeId,
+    setActiveNodeId,
+    video,
+    setVideo,
+    videoPlayer,
+    setVideoPlayer,
+    setValueNode,
+    valueNode,
+    assetNodes,
+    setRoleNodes,
+    setAssetNodes
+  } = useAppContext();
 
   const [newNodeDisplay, setNewNodeDisplay] = useState<boolean>(false);
   const [mediaDisplay, setMediaDisplay] = useState<boolean>(false);
   const [imageSelectionDisplay, setImageSelectionDisplay] = useState<boolean>(false);
-  const [videoPlayer, setVideoPlayer] = useState<boolean>(false);
-
   const [mousePosition, setMousePosition] = useState<number[]>([0, 0])
-
-  const [video, setVideo] = useState<string | undefined>();
 
   useEffect(() => {
     console.log(nodes);
   }, [nodes])
 
   const addNodeToCanvas = (
-    nodeType: string | undefined, 
-    nodeText: string | undefined, 
-    mousePosition: number[]
+    nodeType: string | undefined,
+    nodeText: string | undefined,
+    mousePosition: number[],
+    nodeConnectedTo: Node
   ) => {
     const newNode = {
       id: uuidv4(),
       position: { x: mousePosition[0], y: mousePosition[1] },
       nodeType: nodeType || 'none',
       borderColor: 'black',
-      text: nodeText,
+      text: nodeText || '',
       image: "",
-      video: ""
+      video: "",
+      connectedTo: nodeConnectedTo
+    }
+
+    if(newNode.nodeType === 'value') {
+      setValueNode({ ...newNode, text: nodeText || '' });
+    }
+
+    if(newNode.nodeType === 'role') {
+      setRoleNodes(prev => [...prev, { ...newNode, text: newNode.text || '', connectedTo: valueNode || newNode }])
+    }
+
+    if(newNode.nodeType === 'asset') {
+      setAssetNodes(prev => [...prev, { ...newNode, text: newNode.text || '' }])
+      console.log("asset nodes",assetNodes)
     }
 
     setNewNodeDisplay(false);
@@ -54,7 +73,7 @@ export default function App() {
   }
 
   const getNodePosition = (e: React.MouseEvent<HTMLDivElement>) => {
-    setMousePosition([e.clientX - 50, e.clientY-50])
+    setMousePosition([e.clientX - 50, e.clientY - 50])
     setNewNodeDisplay(true);
   }
 
@@ -114,12 +133,9 @@ export default function App() {
       </div>
       <main className="h-screen w-screen flex justify-center">
         <Canvas
-          nodes={nodes}
           getNodePosition={getNodePosition}
           handleAddMedia={handleAddMedia}
           removeNode={removeNode}
-          setVideo={setVideo}
-          setVideoPlayer={setVideoPlayer}
         />
         {mediaDisplay &&
           <div
@@ -132,7 +148,10 @@ export default function App() {
             }}
           >
             {/* {addMediaDisplay({ handleAddImage, handleAddVideo })} */}
-            <AddMediaDisplay handleAddImage={handleAddImage} handleAddVideo={handleAddVideo} />
+            <AddMediaDisplay
+              handleAddImage={handleAddImage}
+              handleAddVideo={handleAddVideo}
+            />
           </div>
         }
         {imageSelectionDisplay &&

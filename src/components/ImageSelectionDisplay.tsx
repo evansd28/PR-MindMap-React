@@ -1,16 +1,12 @@
 import { useState } from "react";
+import { ImageSelectionDisplayProps } from "../Types/types";
 
 export default function ImageSelectionDisplay({ 
     addImageToNode, 
     setMediaDisplay, 
     setImageSelectionDisplay, 
     activeNodeId 
-}: { 
-    addImageToNode: (nodeId: string | undefined, image: string | undefined) => void; 
-    setMediaDisplay: (display: boolean) => void; 
-    setImageSelectionDisplay: (display: boolean) => void; 
-    activeNodeId: string | undefined; 
-}) {
+}: ImageSelectionDisplayProps) {
     const [searchQuery, setSearchQuery] = useState<string | undefined>();
     const [imageGallery, setImageGallery] = useState<string[]>([]);
 

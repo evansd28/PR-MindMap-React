@@ -1,5 +1,4 @@
 export default function VideoPlayer({ video, setVideoPlayer }: {video: string | undefined, setVideoPlayer: (display: boolean) => void}) {
-    // Extract video ID from the YouTube URL
     const videoId = video?.split('v=')[1]?.split('&')[0];
     const embedUrl = videoId ? `https://www.youtube.com/embed/${videoId}` : '';
 

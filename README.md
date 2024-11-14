@@ -22,4 +22,6 @@
 * ~~Add a context file~~
 * prevent certain nodes from being placed based on current map state
   * i.e., can't place more than one value node, cant place a role node without a value node, etc
+* General improvements to the canvas
+  * Currently has issues with scaling, size inconsistency, etc
 

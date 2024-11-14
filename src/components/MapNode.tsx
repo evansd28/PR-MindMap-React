@@ -25,7 +25,7 @@ export default function MapNode({
         }}>
             <div
                 key={node.id}
-                className={`absolute flex flex-col items-center justify-center rounded-full text-center p-4 border-2`}
+                className={`absolute flex flex-col items-center justify-center rounded-full text-center p-4 bg-white border-2`}
                 style={{ left: node.position.x, top: node.position.y, borderColor: getBorderColor(node.nodeType) }}
             >
                 {

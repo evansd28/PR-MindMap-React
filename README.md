@@ -7,6 +7,14 @@
 
 # TODO
 
+11/15
+ 
+* Accordian style value selector - Christain
+* Goal setting page - Andre
+* About section popup - Christian
+* Tabs for different sections - Christian
+* audio recordings - Andre
+
 * ~~Implement a video player for youtube videos~~
   * NOTE: Videos with copyright restrictions won't play (i.e. sports highlights) 
 * Allow for saving/loading mindmaps locally

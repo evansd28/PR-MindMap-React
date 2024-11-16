@@ -41,7 +41,7 @@ export default function ImageSelectionDisplay({
     return (
         <div className='flex justify-center'>
             <div
-                className="media-display absolute rounded-xl border-2 border-black w-1/2 m-auto bg-gray-400 p-2"
+                className="media-display absolute rounded-xl border-2 border-black w-1/3 m-auto bg-gray-200 p-2"
                 style={{
                     top: '50%',
                     left: '50%',
@@ -53,10 +53,11 @@ export default function ImageSelectionDisplay({
                     <input
                         type="text"
                         placeholder="Search for image..."
+                        className="p-2 text-black rouneded border-2 border-gray-400 rounded w-48"
                         onChange={(e) => setSearchQuery(e.target.value)}
                     />
                     <button
-                        className="bg-blue-500 text-white rounded-xl p-2"
+                        className="bg-orange-500 hover:bg-orange-400 text-white rounded p-2"
                         onClick={() => handleAddImage(searchQuery)}
                     >
                         Search
@@ -70,7 +71,7 @@ export default function ImageSelectionDisplay({
                                 onClick={() => addImageToNode(activeNodeId, image)}>
                                 <img
                                     src={image}
-                                    className='w-32 h-32 rounded-md border-2 border-black'
+                                    className='w-32 h-20 rounded-md border-2 border-black'
                                     alt="Gallery Image"
                                 />
                             </button>
@@ -79,7 +80,7 @@ export default function ImageSelectionDisplay({
                 </div>
                 <div className='flex justify-center'>
                     <button
-                        className='bg-blue-500 text-white rounded-xl p-2'
+                        className='bg-orange-500 w-1/4 hover:bg-orange-400 text-white rounded p-2 mt-2'
                         onClick={() => setImageSelectionDisplay(false)}
                     >
                         Close

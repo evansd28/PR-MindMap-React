@@ -9,24 +9,32 @@ export default function MapNode({
     const { setVideo, setVideoPlayer } = useAppContext();
 
     const getBorderColor = (nodeType: string) => {
-        if(nodeType === 'value') {
-            return '#ff002f'
+        if (nodeType === 'value') {
+            return '#8932a8'
         } else if (nodeType === 'role') {
-            return '#0077ff'
+            return '#3275a8'
         } else {
-            return '#77ff00'
+            return '#32a864'
         }
     }
 
     return (
         <div onClick={(e) => {
             e.stopPropagation();
-            console.log("node clicked")
+            if (node.nodeType !== 'value') {
+                removeNode(e, node.id);
+            }
         }}>
             <div
                 key={node.id}
-                className={`absolute flex flex-col items-center justify-center rounded-full text-center p-4 bg-white border-2`}
-                style={{ left: node.position.x, top: node.position.y, borderColor: getBorderColor(node.nodeType) }}
+                className={`absolute flex flex-col items-center justify-center rounded-full font-semibold text-center bg-white border-4 shadow-xl ${node.nodeType !== 'value' && 'hover:bg-red-100'} hover:cursor-pointer`}
+                style={{
+                    left: node.position.x,
+                    top: node.position.y,
+                    borderColor: getBorderColor(node.nodeType),
+                    width: '110px',
+                    height: '110px'
+                }}
             >
                 {
                     // hide the input if the node has an image
@@ -37,14 +45,16 @@ export default function MapNode({
                 {
                     // if the node is of type 'asset', let users add media (photo, video)
                     node.nodeType === 'asset' &&
-                    // hide the 'add media' button if there is already an image inside teh node
+                    // hide the 'add media' button if there is already an image inside the node
                     !node.image && !node.text &&
                     !node.video &&
                     <button
-                        className='border-2 border-gray-500 rounded-xl p-1 text-center mt-1'
-                        onClick={(e) =>
-                            handleAddMedia(e, node.id)
-                        }
+                        className='text-center hover:bg-transparent hover:underline hover:text-blue-500'
+                        onClick={(e) => {
+                            e.stopPropagation(); // Prevent click event from bubbling up
+                            handleAddMedia(e, node.id);
+                        }}
+                        style={{ pointerEvents: 'auto' }} // Allow pointer events on the button
                     >
                         Add Image/video
                     </button>
@@ -52,10 +62,11 @@ export default function MapNode({
                 {
                     // add the image
                     node.image &&
-                    <div className='py-2'>
+                    <div>
                         <img
                             src={node.image}
-                            className='rounded-xl'
+                            className={`rounded-full ${node.nodeType !== 'value' && 'hover:bg-red-100'}`}
+                            style={{ height: '102px', width: '102px' }}
                             alt="node image"
                         />
                     </div>
@@ -65,7 +76,7 @@ export default function MapNode({
                     node.video &&
                     <div className='py-2'>
                         <button
-                            className=""
+                            className="hover:underline hover:text-blue-500"
                             onClick={() => {
                                 setVideo(node.video)
                                 setVideoPlayer(true);
@@ -75,14 +86,7 @@ export default function MapNode({
                         </button>
                     </div>
                 }
-                {/* button to remove the node
-                This is gonna get replaced later. Just having it for now */}
-                <button
-                    className='bg-red-500 p-1 text-white rounded-xl my-1'
-                    onClick={(e) => removeNode(e, node.id)}
-                >
-                    Remove
-                </button>
+
             </div>
         </div>
     )

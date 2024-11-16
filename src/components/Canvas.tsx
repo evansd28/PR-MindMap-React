@@ -11,7 +11,7 @@ export default function Canvas({
 
     return (
         <div
-            className="mm-canvas w-11/12 h-screen border-2 border-black rounded-xl items-center justify-center mt-10"
+            className="mm-canvas w-screen h-auto border-2 border-gray-300 items-center justify-center"
             id="canvas"
             onClick={(e) => getNodePosition(e)}
         >
@@ -21,10 +21,10 @@ export default function Canvas({
                         return (
                             <line
                                 key={`line-${node.id}`}
-                                x1={valueNode.position.x - 50} // Adjust for node size
-                                y1={valueNode.position.y - 50} // Adjust for node size
-                                x2={node.position.x - 50} // Adjust for node size
-                                y2={node.position.y - 50} // Adjust for node size
+                                x1={valueNode.position.x + (110/2)} // Adjust for node size
+                                y1={valueNode.position.y + (110/2)} // Adjust for node size
+                                x2={node.position.x + (110/2)} // Adjust for node size
+                                y2={node.position.y + (110/2)} // Adjust for node size
                                 stroke="black"
                                 strokeWidth="2"
                             />
@@ -34,10 +34,10 @@ export default function Canvas({
                         return (
                             <line
                                 key={`line-asset-${node.id}`}
-                                x1={node.connectedTo.position.x - 50} // Adjust for node size
-                                y1={node.connectedTo.position.y - 50} // Adjust for node size
-                                x2={node.position.x - 50} // Adjust for node size
-                                y2={node.position.y - 50} // Adjust for node size
+                                x1={node.connectedTo.position.x + (110/2)} // Adjust for node size
+                                y1={node.connectedTo.position.y + (110/2)} // Adjust for node size
+                                x2={node.position.x + (110/2)} // Adjust for node size
+                                y2={node.position.y + (110/2)} // Adjust for node size
                                 stroke="black"
                                 strokeWidth="2"
                             />

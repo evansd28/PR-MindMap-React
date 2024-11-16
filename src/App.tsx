@@ -8,6 +8,8 @@ import NewNodeDisplay from './components/NewNodeDisplay';
 import VideoPlayer from './components/VideoPlayer';
 import { Node } from './Types/types';
 import { useAppContext } from './context/Context';
+import Navbar from './components/Navbar';
+import AssetAccordian from './components/AssetAccordian';
 
 export default function App() {
   //const [nodes, setNodes] = useState<Node[]>([]);
@@ -25,6 +27,7 @@ export default function App() {
     setValueNode,
     valueNode,
     assetNodes,
+    roleNodes,
     setRoleNodes,
     setAssetNodes
   } = useAppContext();
@@ -122,16 +125,14 @@ export default function App() {
   const removeNode = (e: React.MouseEvent<HTMLButtonElement>, nodeId: string) => {
     e.stopPropagation();
     setNodes(nodes.filter(node => node.id !== nodeId))
+    setRoleNodes(roleNodes.filter(node => node.id !== nodeId));
   }
 
   return (
     <>
-      <div className="p-4 flex flex-row">
-        <h1 className="text-3xl font-bold underline">
-          Mind Map
-        </h1>
-      </div>
-      <main className="h-screen w-screen flex justify-center">
+      <Navbar />
+      <main className="flex">
+        <AssetAccordian />
         <Canvas
           getNodePosition={getNodePosition}
           handleAddMedia={handleAddMedia}
@@ -139,7 +140,7 @@ export default function App() {
         />
         {mediaDisplay &&
           <div
-            className="media-display absolute rounded-xl border-2 border-black w-96"
+            className="media-display absolute shadow-xl w-1/3"
             style={{
               top: '50%',
               left: '50%',
@@ -151,6 +152,7 @@ export default function App() {
             <AddMediaDisplay
               handleAddImage={handleAddImage}
               handleAddVideo={handleAddVideo}
+              setMediaDisplay={setMediaDisplay}
             />
           </div>
         }
@@ -164,7 +166,7 @@ export default function App() {
         }
         {newNodeDisplay &&
           <div
-            className="media-display absolute rounded-xl border-2 border-black w-96"
+            className="media-display absolute rounded-xl w-1/3"
             style={{
               top: '50%',
               left: '50%',

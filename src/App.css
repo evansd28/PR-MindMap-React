@@ -4,3 +4,6 @@
     font-family: "Roboto";
 }
 
+body {
+    overflow: hidden;
+}

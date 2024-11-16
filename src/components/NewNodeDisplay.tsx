@@ -2,13 +2,13 @@ import { useState } from "react";
 import { Node, NewNodeDisplayProps } from "../Types/types";
 import { useAppContext } from "../context/Context";
 
-export default function NewNodeDisplay({ 
-    nodes, 
+export default function NewNodeDisplay({
+    nodes,
     addNodeToCanvas,
-    mousePosition, 
-    setNewNodeDisplay 
+    mousePosition,
+    setNewNodeDisplay
 }: NewNodeDisplayProps) {
-    const [newNodeType, setNewNodeType] = useState<string | undefined>("value");
+    const [newNodeType, setNewNodeType] = useState<string | undefined>("role");
     const [nodeText, setNodeText] = useState<string | undefined>("");
     const [assetText, setAssetText] = useState<boolean>(false);
 
@@ -21,57 +21,64 @@ export default function NewNodeDisplay({
     }
 
     return (
-        <div className="bg-gray-500 text-white p-8 flex flex-col text-center justify-center text-xl">
-            <label htmlFor="node-select">Select node type:</label>
-            <select
-                className="node-select mx-5 border-black border-2 text-black p-2"
-                onChange={(e) => setNewNodeType(e.target.value)}
-            >
-                <option value="value">Value</option>
-                <option value="role">Role</option>
-                <option value="asset">Asset</option>
-            </select>
+        <div className="bg-gray-200 border-2 border-gray-400 shadow-xl rounded-xl text-black p-8 flex flex-col text-center items-center justify-center text-xl">
+            <div className="p-2 my-2 rounded-xl bg-gray-100 w-4/5 flex flex-col items-center">
+                <label htmlFor="node-select">Select node type:</label>
+                <select
+                    className="node-select border-gray-400 border-2 rounded text-black p-2 w-32 justify-center mt-2"
+                    onChange={(e) => setNewNodeType(e.target.value)}
+                >
+                    <option value="role">Role</option>
+                    <option value="asset">Asset</option>
+                </select>
+            </div>
+
             {newNodeType !== 'asset' &&
-                <div>
+                <div className="p-2 my-2 rounded-xl bg-gray-100 w-4/5 flex flex-col items-center">
                     <label htmlFor="node-text">Add Text</label>
                     <input
                         type="text"
                         name="node-text"
-                        className="p-2 text-black rouneded border-2 border-black"
+                        className="p-2 text-black rouneded border-2 border-gray-400 rounded w-48"
                         onChange={(e) => setNodeText(e.target.value)}
                     />
                     <button
-                        className="mt-2 bg-green-500 text-white p-2 rounded-xl w-1/2 m-auto"
+                        className="mt-2 bg-orange-500 text-white p-2 rounded-xl w-1/2 m-auto"
                         onClick={() => addNodeToCanvas(newNodeType, nodeText, mousePosition, nodeToConnectTo)}
                     >
                         Add Node
                     </button>
                 </div>
             }
-            {newNodeType === 'asset' &&
-                <div>
+            {(newNodeType === 'asset' && roleNodes.length > 0) ?
+                <div className="p-2 my-2 rounded-xl bg-gray-100 w-4/5">
                     <h1>Add text or image</h1>
                     <div className="gap-2">
                         <button
-                            className="bg-blue-500 p-2 text-white mx-2"
+                            className="bg-orange-500 p-2 text-white mx-2"
                             onClick={() => setAssetText(true)}
                         >
                             Text
                         </button>
                         <button
-                            className="bg-blue-500 p-2 text-white mx-2"
+                            className="bg-orange-500 p-2 text-white mx-2"
                             onClick={addAssetImage}
                         >
                             Image/Video
                         </button>
                     </div>
                 </div>
+                :
+                (newNodeType === 'asset' && roleNodes.length === 0) &&
+                <div className="mt-2">
+                    You must have one role node before adding an asset
+                </div>
             }
-            {newNodeType === 'asset' && nodes.length !== 0 &&
-                <div>
+            {newNodeType === 'asset' && roleNodes.length > 0 &&
+                <div className="p-2 my-2 rounded-xl bg-gray-100 w-4/5">
                     <h1>Connect To Node:</h1>
                     <select
-                        className="text-black p-2 my-2 rounded"
+                        className="text-black p-2 my-2 border-2 border-gray-400 rounded"
                         onChange={(e) => {
                             const selectedNode = roleNodes.find(node => node.text === e.target.value);
                             console.log("selected node", selectedNode)
@@ -90,16 +97,16 @@ export default function NewNodeDisplay({
                 </div>
             }
             {assetText &&
-                <div>
+                <div className="p-2 my-4 rounded-xl bg-gray-100 w-4/5">
                     <label htmlFor="node-text">Add Text</label>
                     <input
                         type="text"
                         name="node-text"
-                        className="p-2 text-black rouneded border-2 border-black"
+                        className="p-2 mx-2 text-black rouneded border-2 rounded border-gray-400"
                         onChange={(e) => setNodeText(e.target.value)}
                     />
                     <button
-                        className="mt-2 bg-green-500 text-white p-2 rounded-xl w-1/2 m-auto"
+                        className="mt-2 bg-orange-500 text-white p-2 rounded-xl w-1/2 m-auto"
                         onClick={() => addNodeToCanvas(newNodeType, nodeText, mousePosition, nodeToConnectTo)}
                     >
                         Add Node

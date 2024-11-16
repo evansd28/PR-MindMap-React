@@ -6,7 +6,7 @@ export interface Node {
     text: string;
     image: string;
     video: string;
-    connectedTo: Node;
+    connectedTo: Node | null;
 }
 
 export interface ContextState {

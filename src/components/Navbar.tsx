@@ -11,7 +11,7 @@ export default function Navbar() {
         <p className="hover:underline cursor-pointer">How to use</p>
       </div>
       <div className="ml-auto flex items-center">
-        <AudioRecorder /> {/* Add the audio recorder component here */}
+        <AudioRecorder />
       </div>
     </div>
   );

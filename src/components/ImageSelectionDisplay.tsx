@@ -12,6 +12,7 @@ export default function ImageSelectionDisplay({
 
     const apiKey = '46834432-8a53092628e33a278a1baf5c7';
 
+    // adds images into the image gallery for the user to select
     const handleAddImage = async (searchQuery: string | undefined) => {
         setImageGallery([]);
         if (searchQuery) {
@@ -19,14 +20,16 @@ export default function ImageSelectionDisplay({
             images.map((image: { previewURL: string }) => {
                 setImageGallery(prev => [...prev, image.previewURL])
             })
-        }
+        } // need to add error handling here
         setImageSelectionDisplay(true);
         setMediaDisplay(false);
     }
 
+    // Accesses the pixabay API to get images based off a search query
     const searchForImage = async (query: string | null) => {
         if (!query) return [];
         console.log("searching...")
+        // currently only gets the first 20 iamges. I'll probably have to find some way to expand this
         const url = `https://pixabay.com/api/?key=${apiKey}&q=${encodeURIComponent(query)}&image_type=photo&per_page=20`;
         try {
             const response = await fetch(url);
@@ -68,6 +71,7 @@ export default function ImageSelectionDisplay({
                         return (
                             <button
                                 className='p-2'
+                                // adds the image to the node
                                 onClick={() => addImageToNode(activeNodeId, image)}>
                                 <img
                                     src={image}

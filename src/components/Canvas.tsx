@@ -1,13 +1,14 @@
 import MapNode from "./MapNode";
 import { Node, CanvasProps } from "../Types/types";
 import { useAppContext } from "../context/Context";
+import { useEffect } from "react";
 
 export default function Canvas({
     getNodePosition,
     handleAddMedia,
     removeNode
 }: CanvasProps) {
-    const { nodes, valueNode } = useAppContext();
+    const {  selectedValue } = useAppContext();
 
     return (
         <div
@@ -16,37 +17,51 @@ export default function Canvas({
             onClick={(e) => getNodePosition(e)}
         >
             <svg className="absolute w-full h-full">
-                {nodes.map((node: Node) => {
-                    if (node.nodeType === 'role' && valueNode) {
+                {selectedValue.childNodes.map((node: Node) => {
+                    // connects nodes on a line
+                    if (node.nodeType === 'role' && selectedValue) {
                         return (
                             <line
                                 key={`line-${node.id}`}
-                                x1={valueNode.position.x + (110/2)} // Adjust for node size
-                                y1={valueNode.position.y + (110/2)} // Adjust for node size
-                                x2={node.position.x + (110/2)} // Adjust for node size
-                                y2={node.position.y + (110/2)} // Adjust for node size
+                                x1={selectedValue.position.x + (110 / 2)} // Adjust for node size
+                                y1={selectedValue.position.y + (110 / 2)} // Adjust for node size
+                                x2={node.position.x + (110 / 2)} // Adjust for node size
+                                y2={node.position.y + (110 / 2)} // Adjust for node size
                                 stroke="black"
                                 strokeWidth="2"
                             />
                         );
                     }
-                    if (node.nodeType === 'asset' && node.connectedTo) {
-                        return (
-                            <line
-                                key={`line-asset-${node.id}`}
-                                x1={node.connectedTo.position.x + (110/2)} // Adjust for node size
-                                y1={node.connectedTo.position.y + (110/2)} // Adjust for node size
-                                x2={node.position.x + (110/2)} // Adjust for node size
-                                y2={node.position.y + (110/2)} // Adjust for node size
-                                stroke="black"
-                                strokeWidth="2"
-                            />
-                        );
-                    }
+                    
                     return null;
                 })}
+                {
+                    selectedValue.childNodes.map((role: Node) => {
+                        return (
+                            role.childNodes.map((asset: Node) => {
+                                return (
+                                    <line
+                                        key={`line-${asset.id}`}
+                                        x1={role.position.x + (110 / 2)} // Adjust for node size
+                                        y1={role.position.y + (110 / 2)} // Adjust for node size
+                                        x2={asset.position.x + (110 / 2)} // Adjust for node size
+                                        y2={asset.position.y + (110 / 2)} // Adjust for node size
+                                        stroke="black"
+                                        strokeWidth="2"
+                                    />
+                                );
+                            })
+                        )
+                    })
+                }
             </svg>
-            {nodes.map((node: Node) => (
+            <MapNode
+                key={selectedValue.id}
+                node={selectedValue}
+                handleAddMedia={handleAddMedia}
+                removeNode={removeNode}
+            />
+            {selectedValue.childNodes.map((node: Node) => (
                 <MapNode
                     key={node.id}
                     node={node}
@@ -54,6 +69,22 @@ export default function Canvas({
                     removeNode={removeNode}
                 />
             ))}
+            {selectedValue.childNodes.map((role: Node) => {
+                return (
+                    role.childNodes.map((asset: Node) => {
+                        return (
+                            <MapNode
+                                key={asset.id}
+                                node={asset}
+                                handleAddMedia={handleAddMedia}
+                                removeNode={removeNode}
+                            />
+                        )
+
+                    })
+
+                );
+            })}
         </div>
     );
 }

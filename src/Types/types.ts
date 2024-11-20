@@ -6,7 +6,7 @@ export interface Node {
     text: string;
     image: string;
     video: string;
-    connectedTo: Node | null;
+    childNodes: Node[];
 }
 
 export interface ContextState {
@@ -18,12 +18,17 @@ export interface ContextState {
     setVideo: React.Dispatch<React.SetStateAction<string | undefined>>;
     videoPlayer: boolean;
     setVideoPlayer: React.Dispatch<React.SetStateAction<boolean>>;
-    valueNode: Node | undefined;
-    setValueNode: React.Dispatch<React.SetStateAction<Node | undefined>>;
+    valueNodes: Node[];
+    valueTypes: string[];
+    setValueNodes: React.Dispatch<React.SetStateAction<Node[]>>;
     roleNodes: Node[];
     setRoleNodes: React.Dispatch<React.SetStateAction<Node[]>>;
     assetNodes: Node[];
     setAssetNodes: React.Dispatch<React.SetStateAction<Node[]>>;
+    selectedValue: Node;
+    setSelectedValue: React.Dispatch<React.SetStateAction<Node>>;
+    newNodeDisplay: boolean;
+    setNewNodeDisplay: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
 export interface CanvasProps {

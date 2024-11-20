@@ -12,8 +12,8 @@ export default function NewNodeDisplay({
     const [nodeText, setNodeText] = useState<string | undefined>("");
     const [assetText, setAssetText] = useState<boolean>(false);
 
-    const { roleNodes } = useAppContext();
-    const [nodeToConnectTo, setNodeToConnectTo] = useState<Node>(roleNodes[0]);
+    const { selectedValue } = useAppContext();
+    const [nodeToConnectTo, setNodeToConnectTo] = useState<Node>(selectedValue.childNodes[0]);
 
     const addAssetImage = () => {
         setNewNodeDisplay(false);
@@ -33,7 +33,7 @@ export default function NewNodeDisplay({
                 </select>
             </div>
 
-            {newNodeType !== 'asset' &&
+            {newNodeType === 'role' &&
                 <div className="p-2 my-2 rounded-xl bg-gray-100 w-4/5 flex flex-col items-center">
                     <label htmlFor="node-text">Add Text</label>
                     <input
@@ -44,13 +44,13 @@ export default function NewNodeDisplay({
                     />
                     <button
                         className="mt-2 bg-orange-500 text-white p-2 rounded-xl w-1/2 m-auto"
-                        onClick={() => addNodeToCanvas(newNodeType, nodeText, mousePosition, nodeToConnectTo)}
+                        onClick={() => addNodeToCanvas(newNodeType, nodeText, mousePosition, selectedValue)}
                     >
                         Add Node
                     </button>
                 </div>
             }
-            {(newNodeType === 'asset' && roleNodes.length > 0) ?
+            {(newNodeType === 'asset' && selectedValue.childNodes.length > 0) ?
                 <div className="p-2 my-2 rounded-xl bg-gray-100 w-4/5">
                     <h1>Add text or image</h1>
                     <div className="gap-2">
@@ -69,26 +69,26 @@ export default function NewNodeDisplay({
                     </div>
                 </div>
                 :
-                (newNodeType === 'asset' && roleNodes.length === 0) &&
+                (newNodeType === 'asset' && selectedValue.childNodes.length === 0) &&
                 <div className="mt-2">
                     You must have one role node before adding an asset
                 </div>
             }
-            {newNodeType === 'asset' && roleNodes.length > 0 &&
+            {newNodeType === 'asset' && selectedValue.childNodes.length > 0 &&
                 <div className="p-2 my-2 rounded-xl bg-gray-100 w-4/5">
                     <h1>Connect To Node:</h1>
                     <select
                         className="text-black p-2 my-2 border-2 border-gray-400 rounded"
                         onChange={(e) => {
-                            const selectedNode = roleNodes.find(node => node.text === e.target.value);
+                            const selectedNode = selectedValue.childNodes.find(node => node.text === e.target.value);
                             console.log("selected node", selectedNode)
                             if (selectedNode) {
                                 setNodeToConnectTo(selectedNode);
-                                console.log("connected to", nodeToConnectTo);
+                                console.log("connected to", nodeToConnectTo.text);
                             }
                         }}
                     >
-                        {roleNodes.map((node: Node) => {
+                        {selectedValue.childNodes.map((node: Node) => {
                             return (
                                 <option key={node.id}>{node.text}</option>
                             )

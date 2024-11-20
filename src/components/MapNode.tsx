@@ -10,7 +10,7 @@ export default function MapNode({
 
   const getBorderColor = (nodeType: string) => {
     if (nodeType === "value") {
-      return "#8932a8";
+      return "#f97316";
     } else if (nodeType === "role") {
       return "#3275a8";
     } else {
@@ -23,13 +23,13 @@ export default function MapNode({
       onClick={(e) => {
         e.stopPropagation();
         if (node.nodeType !== "value") {
-          removeNode(e, node.id);
+          removeNode(e, node);
         }
       }}
     >
       <div
         key={node.id}
-        className={`absolute flex flex-col items-center justify-center rounded-full font-semibold text-center bg-white border-4 shadow-xl ${
+        className={`absolute flex flex-col items-center justify-center rounded-${node.nodeType === 'value' && 'full' || node.nodeType === 'role' && 'xl'} font-semibold text-center bg-white border-4 shadow-xl ${
           node.nodeType !== "value" && "hover:bg-red-100"
         } hover:cursor-pointer`}
         style={{
@@ -70,7 +70,7 @@ export default function MapNode({
             <div>
               <img
                 src={node.image}
-                className={`rounded-full ${
+                className={`${
                   node.nodeType !== "value" && "hover:bg-red-100"
                 }`}
                 style={{ height: "102px", width: "102px" }}

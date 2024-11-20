@@ -25,8 +25,7 @@ export default function App() {
     setVideo,
     videoPlayer,
     setVideoPlayer,
-    setValueNode,
-    valueNode,
+    selectedValue,
     assetNodes,
     roleNodes,
     setRoleNodes,
@@ -35,20 +34,21 @@ export default function App() {
 
   const [newNodeDisplay, setNewNodeDisplay] = useState<boolean>(false);
   const [mediaDisplay, setMediaDisplay] = useState<boolean>(false);
-  const [imageSelectionDisplay, setImageSelectionDisplay] =
-    useState<boolean>(false);
+  const [imageSelectionDisplay, setImageSelectionDisplay] = useState<boolean>(false);
   const [mousePosition, setMousePosition] = useState<number[]>([0, 0]);
 
   useEffect(() => {
     console.log(nodes);
   }, [nodes]);
 
+  // function for adding node onto the canvas
   const addNodeToCanvas = (
     nodeType: string | undefined,
     nodeText: string | undefined,
     mousePosition: number[],
-    nodeConnectedTo: Node
+    connectingNode: Node
   ) => {
+    // createa a new node
     const newNode = {
       id: uuidv4(),
       position: { x: mousePosition[0], y: mousePosition[1] },
@@ -57,55 +57,58 @@ export default function App() {
       text: nodeText || "",
       image: "",
       video: "",
-      connectedTo: nodeConnectedTo,
+      childNodes: []
     };
 
-    if (newNode.nodeType === "value") {
-      setValueNode({ ...newNode, text: nodeText || "" });
-    }
-
+    // if its a role, then add the node into the role nodes
+    // also connect it to the center value node
     if (newNode.nodeType === "role") {
-      setRoleNodes((prev) => [
-        ...prev,
-        {
-          ...newNode,
-          text: newNode.text || "",
-          connectedTo: valueNode || newNode,
-        },
-      ]);
+      selectedValue.childNodes.push(newNode);
     }
 
+    // add asset node to the asset nodes
     if (newNode.nodeType === "asset") {
-      setAssetNodes((prev) => [
-        ...prev,
-        { ...newNode, text: newNode.text || "" },
-      ]);
-      console.log("asset nodes", assetNodes);
+      selectedValue.childNodes.map((role) => {
+        if(role.id === connectingNode.id) {
+          role.childNodes.push(newNode)
+        }
+      })
     }
-
+    // hide new node display
     setNewNodeDisplay(false);
-    setNodes((prev) => [...prev, newNode]);
+    console.log("selected value",selectedValue)
+    // update the list of all nodes
+    // setNodes((prev) => [...prev, newNode]);
   };
 
+  // gets the current position of where the user clicked so that the node can be palced there
   const getNodePosition = (e: React.MouseEvent<HTMLDivElement>) => {
-    setMousePosition([e.clientX - 50, e.clientY - 50]);
+    // mouse position has to be modified since by default it starts at the top left of the node instead of the center
+    // offset it by half the the node size to get mouse clicks centered
+    setMousePosition([e.clientX - (110 / 2), e.clientY - (110 / 2)]);
     setNewNodeDisplay(true);
   };
 
+  // helper function for the add media display
   const handleAddMedia = (
     e: React.MouseEvent<HTMLButtonElement>,
     nodeId: string
   ) => {
+    // prevents a new node being added on top when clicking on a node
     e.stopPropagation();
     setMediaDisplay(true);
+    // set the active node ID so that way we can place the image at the node we want
     setActiveNodeId(nodeId);
   };
 
+  // brings up/hides some displays
   const handleAddImage = async () => {
     setImageSelectionDisplay(true);
     setMediaDisplay(false);
   };
 
+  // right now will prompt the user to add a youtube link
+  // Most likely gonna get changed soon
   const handleAddVideo = () => {
     const query = prompt("paste a link to a youtube video here:");
     if (query) {
@@ -114,42 +117,65 @@ export default function App() {
     }
   };
 
+  // update the current node to have an image take up the entire node surface area
   const addImageToNode = (
     activeNodeId: string | undefined,
     image: string | undefined
   ) => {
-    console.log(activeNodeId);
-    const updatedNodes = nodes.map((node: Node) => {
-      if (node.id === activeNodeId) {
-        return { ...node, image: image || "" };
-      }
-      return node;
-    });
-    setNodes(updatedNodes);
+    if (image) {
+      selectedValue.childNodes.forEach((role) => {
+        role.childNodes.forEach((asset) => {
+          if(asset.id === activeNodeId) {
+            asset.image = image;
+          }
+        });
+      });
+    }
     setImageSelectionDisplay(false);
   };
 
+  // just like adding images except this one adds a link to access the video p
   const addVideoToNode = (
     activeNodeId: string | undefined,
     video: string | undefined
   ) => {
-    const updatedNodes = nodes.map((node: Node) => {
-      if (node.id === activeNodeId) {
-        return { ...node, video: video || "" };
-      }
-      return node;
-    });
-    setNodes(updatedNodes);
+    if (video) {
+      selectedValue.childNodes.forEach((role) => {
+        role.childNodes.forEach((asset) => {
+          if(asset.id === activeNodeId) {
+            asset.video = video;
+          }
+        });
+      });
+    }
     setMediaDisplay(false);
   };
 
+  // removes a node from the array
+  // still have to update this for asset nodes as well since removing a role node doesn't remove its asset nodes
   const removeNode = (
     e: React.MouseEvent<HTMLButtonElement>,
-    nodeId: string
+    node: Node
   ) => {
     e.stopPropagation();
-    setNodes(nodes.filter((node) => node.id !== nodeId));
-    setRoleNodes(roleNodes.filter((node) => node.id !== nodeId));
+    console.log("click");
+    
+    if (node.nodeType === 'role') {
+      selectedValue.childNodes = selectedValue.childNodes.filter(role => role.id !== node.id);
+    } else {
+      selectedValue.childNodes.forEach((role) => {
+        role.childNodes = role.childNodes.filter(asset => asset.id !== node.id);
+      });
+    }
+
+    setNodes((prevNodes) => {
+      return prevNodes.map((n) => {
+        if (n.id === selectedValue.id) {
+          return { ...n, childNodes: selectedValue.childNodes };
+        }
+        return n;
+      });
+    });
   };
 
   return (
@@ -207,7 +233,10 @@ export default function App() {
           </div>
         )}
         {videoPlayer && (
-          <VideoPlayer video={video} setVideoPlayer={setVideoPlayer} />
+          <VideoPlayer
+            video={video}
+            setVideoPlayer={setVideoPlayer}
+          />
         )}
       </main>
     </>

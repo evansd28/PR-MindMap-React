@@ -1,6 +1,5 @@
 import { useState } from "react"
 import { useAppContext } from "../context/Context";
-import { v4 as uuidv4 } from 'uuid';
 
 export default function AssetAccordian() {
     const [showAccordian, setShowAccordian] = useState<boolean>(true);

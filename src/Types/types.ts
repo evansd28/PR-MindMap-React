@@ -34,13 +34,13 @@ export interface ContextState {
 export interface CanvasProps {
     getNodePosition: (e: React.MouseEvent<HTMLDivElement>) => void;
     handleAddMedia: (e: React.MouseEvent<HTMLButtonElement>, nodeId: string) => void;
-    removeNode: (e: React.MouseEvent<HTMLButtonElement>, nodeId: string) => void;
+    removeNode: (node: Node) => void;
 }
 
 export interface MapNodeProps {
     node: Node;
     handleAddMedia: (e: React.MouseEvent<HTMLButtonElement>, nodeId: string) => void;
-    removeNode: (e: React.MouseEvent<HTMLButtonElement>, nodeId: string) => void;
+    removeNode: (node: Node) => void;
 }
 
 export interface ImageSelectionDisplayProps {

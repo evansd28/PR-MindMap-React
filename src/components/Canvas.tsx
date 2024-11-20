@@ -1,7 +1,6 @@
 import MapNode from "./MapNode";
 import { Node, CanvasProps } from "../Types/types";
 import { useAppContext } from "../context/Context";
-import { useEffect } from "react";
 
 export default function Canvas({
     getNodePosition,

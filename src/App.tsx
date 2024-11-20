@@ -10,7 +10,6 @@ import { Node } from "./Types/types";
 import { useAppContext } from "./context/Context";
 import Navbar from "./components/Navbar";
 import AssetAccordian from "./components/AssetAccordian";
-import AudioRecorder from "./components/AudioRecorder";
 
 export default function App() {
   //const [nodes, setNodes] = useState<Node[]>([]);
@@ -26,10 +25,6 @@ export default function App() {
     videoPlayer,
     setVideoPlayer,
     selectedValue,
-    assetNodes,
-    roleNodes,
-    setRoleNodes,
-    setAssetNodes,
   } = useAppContext();
 
   const [newNodeDisplay, setNewNodeDisplay] = useState<boolean>(false);
@@ -154,10 +149,9 @@ export default function App() {
   // removes a node from the array
   // still have to update this for asset nodes as well since removing a role node doesn't remove its asset nodes
   const removeNode = (
-    e: React.MouseEvent<HTMLButtonElement>,
     node: Node
   ) => {
-    e.stopPropagation();
+    //e.stopPropagation();
     console.log("click");
     
     if (node.nodeType === 'role') {
@@ -229,6 +223,7 @@ export default function App() {
               addNodeToCanvas={addNodeToCanvas}
               mousePosition={mousePosition}
               setNewNodeDisplay={setNewNodeDisplay}
+              setImageSelectionDisplay={setImageSelectionDisplay}
             />
           </div>
         )}

@@ -3,7 +3,6 @@ import { Node, NewNodeDisplayProps } from "../Types/types";
 import { useAppContext } from "../context/Context";
 
 export default function NewNodeDisplay({
-    nodes,
     addNodeToCanvas,
     mousePosition,
     setNewNodeDisplay

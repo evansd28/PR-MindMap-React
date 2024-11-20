@@ -23,7 +23,7 @@ export default function MapNode({
       onClick={(e) => {
         e.stopPropagation();
         if (node.nodeType !== "value") {
-          removeNode(e, node);
+          removeNode(node);
         }
       }}
     >
@@ -38,6 +38,7 @@ export default function MapNode({
           borderColor: getBorderColor(node.nodeType),
           width: "110px",
           height: "110px",
+          borderRadius: node.nodeType === 'value' ? '100%' : undefined
         }}
       >
         {

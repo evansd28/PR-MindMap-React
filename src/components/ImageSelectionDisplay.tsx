@@ -17,8 +17,9 @@ export default function ImageSelectionDisplay({
         setImageGallery([]);
         if (searchQuery) {
             const images = await searchForImage(searchQuery);
-            images.map((image: { previewURL: string }) => {
-                setImageGallery(prev => [...prev, image.previewURL])
+            images.map((image: { largeImageURL: string }) => {
+                console.log(image)
+                setImageGallery(prev => [...prev, image.largeImageURL])
             })
         } // need to add error handling here
         setImageSelectionDisplay(true);

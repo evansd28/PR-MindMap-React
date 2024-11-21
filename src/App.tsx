@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { v4 as uuidv4 } from "uuid";
 import "./App.css";
 import AddMediaDisplay from "./components/AddMediaDisplay";
@@ -10,11 +10,10 @@ import { Node } from "./Types/types";
 import { useAppContext } from "./context/Context";
 import Navbar from "./components/Navbar";
 import AssetAccordian from "./components/AssetAccordian";
+import EditAssetTextDisplay from "./components/EditAssetTextDisplay";
+import FullImageDisplay from "./components/FullImageDisplay";
 
 export default function App() {
-  //const [nodes, setNodes] = useState<Node[]>([]);
-  //const [activeNodeId, setActiveNodeId] = useState<string | undefined>();
-
   const {
     nodes,
     setNodes,
@@ -25,17 +24,14 @@ export default function App() {
     videoPlayer,
     setVideoPlayer,
     selectedValue,
+    editTextDisplay,
+    fullImageDisplay
   } = useAppContext();
 
   const [newNodeDisplay, setNewNodeDisplay] = useState<boolean>(false);
   const [mediaDisplay, setMediaDisplay] = useState<boolean>(false);
   const [imageSelectionDisplay, setImageSelectionDisplay] = useState<boolean>(false);
   const [mousePosition, setMousePosition] = useState<number[]>([0, 0]);
-
-  useEffect(() => {
-    console.log(nodes);
-  }, [nodes]);
-
   // function for adding node onto the canvas
   const addNodeToCanvas = (
     nodeType: string | undefined,
@@ -44,36 +40,42 @@ export default function App() {
     connectingNode: Node
   ) => {
     // createa a new node
-    const newNode = {
-      id: uuidv4(),
-      position: { x: mousePosition[0], y: mousePosition[1] },
-      nodeType: nodeType || "none",
-      borderColor: "black",
-      text: nodeText || "",
-      image: "",
-      video: "",
-      childNodes: []
-    };
+    if (nodeType === 'role' && nodeText?.length === 0) {
+      alert('cannot have empty text field')
+    } else {
 
-    // if its a role, then add the node into the role nodes
-    // also connect it to the center value node
-    if (newNode.nodeType === "role") {
-      selectedValue.childNodes.push(newNode);
-    }
 
-    // add asset node to the asset nodes
-    if (newNode.nodeType === "asset") {
-      selectedValue.childNodes.map((role) => {
-        if(role.id === connectingNode.id) {
-          role.childNodes.push(newNode)
-        }
-      })
+      const newNode = {
+        id: uuidv4(),
+        position: { x: mousePosition[0], y: mousePosition[1] },
+        nodeType: nodeType || "none",
+        borderColor: "black",
+        text: nodeText || "",
+        image: "",
+        video: "",
+        childNodes: []
+      };
+
+      // if its a role, then add the node into the role nodes
+      // also connect it to the center value node
+      if (newNode.nodeType === "role") {
+        selectedValue.childNodes.push(newNode);
+      }
+
+      // add asset node to the asset nodes
+      if (newNode.nodeType === "asset") {
+        selectedValue.childNodes.map((role) => {
+          if (role.id === connectingNode.id) {
+            role.childNodes.push(newNode)
+          }
+        })
+      }
+      // hide new node display
+      setNewNodeDisplay(false);
+      console.log("selected value", selectedValue)
+      // update the list of all nodes
+      // setNodes((prev) => [...prev, newNode]);
     }
-    // hide new node display
-    setNewNodeDisplay(false);
-    console.log("selected value",selectedValue)
-    // update the list of all nodes
-    // setNodes((prev) => [...prev, newNode]);
   };
 
   // gets the current position of where the user clicked so that the node can be palced there
@@ -120,7 +122,10 @@ export default function App() {
     if (image) {
       selectedValue.childNodes.forEach((role) => {
         role.childNodes.forEach((asset) => {
-          if(asset.id === activeNodeId) {
+          if (asset.id === activeNodeId) {
+            if (asset.video) {
+              asset.video = ""; // if user tries to update a video node to an image node, it removes the video
+            }
             asset.image = image;
           }
         });
@@ -137,7 +142,10 @@ export default function App() {
     if (video) {
       selectedValue.childNodes.forEach((role) => {
         role.childNodes.forEach((asset) => {
-          if(asset.id === activeNodeId) {
+          if (asset.id === activeNodeId) {
+            if (asset.image) {
+              asset.image = ""; // if user tries to update an image node to a video node, it removes the image
+            }
             asset.video = video;
           }
         });
@@ -153,7 +161,7 @@ export default function App() {
   ) => {
     //e.stopPropagation();
     console.log("click");
-    
+
     if (node.nodeType === 'role') {
       selectedValue.childNodes = selectedValue.childNodes.filter(role => role.id !== node.id);
     } else {
@@ -176,7 +184,9 @@ export default function App() {
     <>
       <Navbar />
       <main className="flex">
-        <AssetAccordian />
+        {!fullImageDisplay && !videoPlayer &&
+          <AssetAccordian />
+        }
         <Canvas
           getNodePosition={getNodePosition}
           handleAddMedia={handleAddMedia}
@@ -232,6 +242,22 @@ export default function App() {
             video={video}
             setVideoPlayer={setVideoPlayer}
           />
+        )}
+        {fullImageDisplay &&
+          <FullImageDisplay />
+        }
+        {editTextDisplay && (
+          <div
+            className="media-display absolute rounded-xl w-1/3"
+            style={{
+              top: "50%",
+              left: "50%",
+              transform: "translate(-50%, -50%)",
+              zIndex: 50,
+            }}
+          >
+            <EditAssetTextDisplay />
+          </div>
         )}
       </main>
     </>

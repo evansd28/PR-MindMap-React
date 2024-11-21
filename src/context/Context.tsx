@@ -32,9 +32,12 @@ const [nodes, setNodes] = useState<Node[]>([selectedValue]);
 const [activeNodeId, setActiveNodeId] = useState<string | undefined>();
 const [video, setVideo] = useState<string | undefined>();
 const [videoPlayer, setVideoPlayer] = useState<boolean>(false);
+const [fullImageDisplay, setFullImageDisplay] = useState<boolean>(false);
 const [roleNodes, setRoleNodes] = useState<Node[]>([]);
 const [assetNodes, setAssetNodes] = useState<Node[]>([]);
 const [newNodeDisplay, setNewNodeDisplay] = useState<boolean>(false);
+const [editTextDisplay, setEditTextDisplay] = useState<boolean>(false);
+const [expandedImage, setExpandedImage] = useState<string | undefined>();
 
 useEffect(() => {
     console.log(selectedValue.childNodes)
@@ -50,6 +53,8 @@ return (
         setVideo,
         videoPlayer,
         setVideoPlayer,
+        fullImageDisplay,
+        setFullImageDisplay,
         valueTypes,
         valueNodes,
         setValueNodes,
@@ -60,7 +65,11 @@ return (
         selectedValue,
         setSelectedValue,
         newNodeDisplay,
-        setNewNodeDisplay
+        setNewNodeDisplay,
+        editTextDisplay,
+        setEditTextDisplay,
+        expandedImage,
+        setExpandedImage
     }}>
         {children}
     </AppContext.Provider>

@@ -24,14 +24,13 @@ export default function NewNodeDisplay({
             <div className="p-2 my-2 rounded-xl bg-gray-100 w-4/5 flex flex-col items-center">
                 <label htmlFor="node-select">Select node type:</label>
                 <select
-                    className="node-select border-gray-400 border-2 rounded text-black p-2 w-32 justify-center mt-2"
+                    className="node-select border-gray-400 border-2 rounded text-black p-2 w-48 text-center justify-center mt-2"
                     onChange={(e) => setNewNodeType(e.target.value)}
                 >
-                    <option value="role">Role</option>
+                    <option value="role">Role Model</option>
                     <option value="asset">Asset</option>
                 </select>
             </div>
-
             {newNodeType === 'role' &&
                 <div className="p-2 my-2 rounded-xl bg-gray-100 w-4/5 flex flex-col items-center">
                     <label htmlFor="node-text">Add Text</label>
@@ -112,6 +111,12 @@ export default function NewNodeDisplay({
                     </button>
                 </div>
             }
+            <button
+                className="mt-2 bg-orange-500 text-white p-2 rounded-xl w-1/2 m-auto"
+                onClick={() => setNewNodeDisplay(false)}
+            >
+                Cancel
+            </button>
         </div>
     )
 }

@@ -18,6 +18,8 @@ export interface ContextState {
     setVideo: React.Dispatch<React.SetStateAction<string | undefined>>;
     videoPlayer: boolean;
     setVideoPlayer: React.Dispatch<React.SetStateAction<boolean>>;
+    fullImageDisplay: boolean;
+    setFullImageDisplay: React.Dispatch<React.SetStateAction<boolean>>;
     valueNodes: Node[];
     valueTypes: string[];
     setValueNodes: React.Dispatch<React.SetStateAction<Node[]>>;
@@ -29,6 +31,10 @@ export interface ContextState {
     setSelectedValue: React.Dispatch<React.SetStateAction<Node>>;
     newNodeDisplay: boolean;
     setNewNodeDisplay: React.Dispatch<React.SetStateAction<boolean>>;
+    editTextDisplay: boolean;
+    setEditTextDisplay: React.Dispatch<React.SetStateAction<boolean>>;
+    expandedImage: string | undefined;
+    setExpandedImage: React.Dispatch<React.SetStateAction<string | undefined>>;
 }
 
 export interface CanvasProps {

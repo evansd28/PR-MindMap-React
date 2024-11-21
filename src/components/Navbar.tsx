@@ -28,8 +28,8 @@ export default function Navbar() {
       </div>
       {isDialogOpen && (
         <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
-          <div className="bg-white p-4 rounded shadow-lg text-black ">
-            <h2 className="text-xl font-semibold mb-4">How to use</h2>
+          <div className="bg-white p-4 rounded-xl border-4 border-gray-300 shadow-lg text-black ">
+            <h2 className="text-xl font-semibold mb-4 text-center">How to use</h2>
             <p>
               <ul className="list-disc list-inside">
                 <li>
@@ -40,10 +40,11 @@ export default function Navbar() {
                   Click on a node to edit its text or add an image or video.
                 </li>
                 <li>Click on the "Start Recording" button to record audio.</li>
+                <li>You can also click on the node to move around the map</li>
               </ul>
             </p>
             <button
-              className="mt-4 bg-red-500 text-white px-4 py-2 rounded"
+              className="mt-4 bg-red-500 text-white px-4 py-2 rounded flex m-auto"
               onClick={handleDialogClose}
             >
               Close

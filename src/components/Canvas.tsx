@@ -22,10 +22,10 @@ export default function Canvas({
                         return (
                             <line
                                 key={`line-${node.id}`}
-                                x1={selectedValue.position.x + (110 / 2)} // Adjust for node size
-                                y1={selectedValue.position.y + (110 / 2)} // Adjust for node size
-                                x2={node.position.x + (110 / 2)} // Adjust for node size
-                                y2={node.position.y + (110 / 2)} // Adjust for node size
+                                x1={selectedValue.position.x + (110 / 2)} 
+                                y1={selectedValue.position.y + (110 / 2)} 
+                                x2={node.position.x + (110 / 2)} 
+                                y2={node.position.y + (110 / 2)} 
                                 stroke="black"
                                 strokeWidth="2"
                             />
@@ -41,10 +41,10 @@ export default function Canvas({
                                 return (
                                     <line
                                         key={`line-${asset.id}`}
-                                        x1={role.position.x + (110 / 2)} // Adjust for node size
-                                        y1={role.position.y + (110 / 2)} // Adjust for node size
-                                        x2={asset.position.x + (110 / 2)} // Adjust for node size
-                                        y2={asset.position.y + (110 / 2)} // Adjust for node size
+                                        x1={role.position.x + (110 / 2)} 
+                                        y1={role.position.y + (110 / 2)} 
+                                        x2={asset.position.x + (110 / 2)} 
+                                        y2={asset.position.y + (110 / 2)} 
                                         stroke="black"
                                         strokeWidth="2"
                                     />

@@ -9,6 +9,7 @@ export default function MapNode({
 }: MapNodeProps) {
   const { setVideo, setVideoPlayer, setEditTextDisplay, setActiveNodeId, setExpandedImage, setFullImageDisplay } = useAppContext();
   const [showEditFeatures, setShowEditFeatures] = useState<boolean>(false);
+  const [canDrag, setCanDrag] = useState<boolean>(false);
 
   const getBorderColor = (nodeType: string) => {
     if (nodeType === "value") {
@@ -19,6 +20,25 @@ export default function MapNode({
       return "#32a864";
     }
   };
+
+  const moveNode = (e: React.MouseEvent) => {
+    //e.stopPropagation();
+    console.log(canDrag)
+    if (canDrag) {
+      const initialX = node.position.x; 
+      const initialY = node.position.y; 
+      const offsetX = e.clientX - initialX; 
+      const offsetY = e.clientY - initialY; 
+
+      document.onmousemove = (event) => {
+        node.position.x = event.clientX - offsetX;
+        node.position.y = event.clientY - offsetY; 
+      };
+    } else {
+      document.onmousemove = null;
+      document.onclick = null;
+    }
+  }
 
   return (
     <div
@@ -36,11 +56,15 @@ export default function MapNode({
           height: "110px",
           borderRadius: node.nodeType === 'value' ? '100%' : undefined
         }}
-        onClick={(e) => e.stopPropagation()}
+        onClick={(e) => {
+          e.stopPropagation();
+          setCanDrag(!canDrag);
+          moveNode(e);
+        }}
       >
         {
           // hide the input if the node has an image
-          !node.image && (!showEditFeatures || node.nodeType === 'value') && <h1>{node.text}</h1>
+          !node.image  && (!showEditFeatures || node.nodeType === 'value') && <h1>{node.text}</h1>
         }
         {
           // if the node is of type 'asset', let users add media (photo, video)
@@ -95,7 +119,7 @@ export default function MapNode({
           )
         }
         {
-          showEditFeatures && node.nodeType !== 'value' &&
+          showEditFeatures && canDrag && node.nodeType !== 'value' &&
           <div className="flex flex-col">
             <div className={`${node.video && 'absolute flex flex-row -ml-10 -mt-2'} ${node.nodeType == 'asset' && !node.video && !node.image && !node.text && 'absolute flex flex-row -ml-5 '}`}>
               {!node.video && !node.image && node.nodeType === 'role' &&
@@ -147,7 +171,7 @@ export default function MapNode({
                     <i className="fa-solid fa-image"></i>
                   </button>
                   <button
-                    className="px-2 py-1 bg-purple-500 hover:bg-green-400 rounded-xl text-lg text-white mx-1 w-8 h-8 mt-1"
+                    className="px-2 py-1 bg-purple-500 hover:bg-purple-400 rounded-xl text-lg text-white mx-1 w-8 h-8 mt-1"
                     onClick={() => {
                       setExpandedImage(node.image);
                       setFullImageDisplay(true);

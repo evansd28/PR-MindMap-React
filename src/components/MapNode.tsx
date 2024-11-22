@@ -119,7 +119,7 @@ export default function MapNode({
           )
         }
         {
-          showEditFeatures && canDrag && node.nodeType !== 'value' &&
+          showEditFeatures && node.nodeType !== 'value' &&
           <div className="flex flex-col">
             <div className={`${node.video && 'absolute flex flex-row -ml-10 -mt-2'} ${node.nodeType == 'asset' && !node.video && !node.image && !node.text && 'absolute flex flex-row -ml-5 '}`}>
               {!node.video && !node.image && node.nodeType === 'role' &&

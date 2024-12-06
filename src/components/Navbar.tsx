@@ -1,4 +1,4 @@
-import AudioRecorder from "./AudioRecorder";
+//import AudioRecorder from "./AudioRecorder";
 import { useState } from "react";
 
 export default function Navbar() {
@@ -23,9 +23,9 @@ export default function Navbar() {
           How to use
         </p>
       </div>
-      <div className="ml-auto flex items-center">
+      {/* <div className="ml-auto flex items-center">
         <AudioRecorder />
-      </div>
+      </div> */}
       {isDialogOpen && (
         <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
           <div className="bg-white p-4 rounded-xl border-4 border-gray-300 shadow-lg text-black ">

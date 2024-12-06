@@ -47,7 +47,7 @@ export default function MapNode({
     >
       <div
         key={node.id}
-        className={`absolute flex flex-col items-center justify-center rounded-${node.nodeType === 'value' && 'full' || node.nodeType === 'role' && 'xl'} font-semibold text-center bg-white border-4 shadow-xl hover:cursor-pointer`}
+        className={`absolute flex flex-col items-center justify-center rounded-${node.nodeType === 'value' && 'full' || node.nodeType === 'role' && 'xl'} font-semibold text-center bg-white border-4 hover:cursor-pointer`}
         style={{
           left: node.position.x,
           top: node.position.y,

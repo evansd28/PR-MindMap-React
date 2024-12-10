@@ -14,7 +14,7 @@ This app can be run on your current browser by clicking the link on the side, or
   * Like adding a picture or video (add media)
   * Functionality for this feature already exists, it just needs to be interwoven into the node adding feature
 * Allow users to select more photos in image search
-  * Have left and right buttons to render next batch of photos
+  * Have left and right buttons to render next batch of photos (like an image gallery)
 * Allow users to upload their own photos and videos from their devices  
 
 # Issues

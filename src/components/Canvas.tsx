@@ -32,8 +32,8 @@ export default function Canvas({
             ref={imageRef}
             style={{
                 position: "relative",
-                width: "3840px",
-                height: "1560px",
+                width: window.innerWidth,
+                height: window.innerHeight,
                 backgroundImage: "url('/template/template.png')",
                 backgroundSize: "cover",
                 border: "none"

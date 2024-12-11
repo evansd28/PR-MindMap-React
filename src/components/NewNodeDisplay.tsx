@@ -21,6 +21,11 @@ export default function NewNodeDisplay({
 
     return (
         <div className="bg-gray-200 border-2 border-gray-400 shadow-xl rounded-xl text-black p-8 flex flex-col text-center items-center justify-center text-xl">
+            <i
+                className="fa-solid fa-x absolute right-4 top-4 cursor-pointer hover:text-red-500"
+                onClick={() => setNewNodeDisplay(false)}
+            >
+            </i>
             <div className="p-2 my-2 rounded-xl bg-gray-100 w-4/5 flex flex-col items-center">
                 <label htmlFor="node-select">Select node type:</label>
                 <select
@@ -41,7 +46,7 @@ export default function NewNodeDisplay({
                         onChange={(e) => setNodeText(e.target.value)}
                     />
                     <button
-                        className="mt-2 bg-orange-500 text-white p-2 rounded-xl w-1/2 m-auto"
+                        className="mt-2 bg-green-500 hover:bg-green-400 text-white p-2 rounded-xl w-1/2 m-auto"
                         onClick={() => addNodeToCanvas(newNodeType, nodeText, mousePosition, selectedValue)}
                     >
                         Add Node
@@ -53,13 +58,13 @@ export default function NewNodeDisplay({
                     <h1>Add text or image</h1>
                     <div className="gap-2">
                         <button
-                            className="bg-orange-500 p-2 text-white mx-2"
+                            className="bg-orange-500 hover:bg-orange-400 p-2 text-white mx-2 rounded-xl"
                             onClick={() => setAssetText(true)}
                         >
                             Text
                         </button>
                         <button
-                            className="bg-orange-500 p-2 text-white mx-2"
+                            className="bg-orange-500 hover:bg-orange-400 p-2 text-white mx-2 rounded-xl"
                             onClick={addAssetImage}
                         >
                             Image/Video
@@ -104,7 +109,7 @@ export default function NewNodeDisplay({
                         onChange={(e) => setNodeText(e.target.value)}
                     />
                     <button
-                        className="mt-2 bg-orange-500 text-white p-2 rounded-xl w-1/2 m-auto"
+                        className="mt-2 bg-green-500 text-white p-2 rounded-xl w-1/2 m-auto"
                         onClick={() => addNodeToCanvas(newNodeType, nodeText, mousePosition, nodeToConnectTo)}
                     >
                         Add Node
@@ -112,7 +117,7 @@ export default function NewNodeDisplay({
                 </div>
             }
             <button
-                className="mt-2 bg-orange-500 text-white p-2 rounded-xl w-1/2 m-auto"
+                className="mt-2 bg-red-500 hover:bg-red-400 text-white p-2 rounded-xl w-1/2 m-auto"
                 onClick={() => setNewNodeDisplay(false)}
             >
                 Cancel

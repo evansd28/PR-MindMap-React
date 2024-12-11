@@ -83,7 +83,9 @@ export default function App() {
     // mouse position has to be modified since by default it starts at the top left of the node instead of the center
     // offset it by half the the node size to get mouse clicks centered
     setMousePosition([e.clientX - (110 / 2), e.clientY - (110 / 2)]);
-    setNewNodeDisplay(true);
+    if (!editTextDisplay) {
+      setNewNodeDisplay(true);
+    }
   };
 
   // helper function for the add media display

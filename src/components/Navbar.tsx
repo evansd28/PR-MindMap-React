@@ -1,13 +1,20 @@
-import { useState } from "react";
+import { useState, useContext } from "react";
+import { useAppContext } from "../context/Context";
+import { AuthContext } from "../context/AuthContext";
+import Logout from "./Logout";
 
 export default function Navbar() {
+  const { selectedValue } = useAppContext();
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [isGetHelpOpen, setIsGetHelpOpen] = useState(false);
   const [iframeUrl, setIframeUrl] = useState("");
+  const [selectedCategory, setSelectedCategory] = useState<string | null>(null); // State to track selected category
+
+  const { user } = useContext(AuthContext);
 
   const handleDialogOpen = () => setIsDialogOpen(true);
   const handleDialogClose = () => setIsDialogOpen(false);
-  const handleGetHelpClose = () => setIsGetHelpOpen(false);
+  //const handleGetHelpClose = () => setIsGetHelpOpen(false);
 
   const defaultZip = "15224"; // Default ZIP code
   const city = "pittsburgh-pa"; // Default city
@@ -91,16 +98,40 @@ export default function Navbar() {
     ],
   };
 
+  const categoryMapping: Record<string, string> = {
+    "Financial Security": "Money",
+    "Social Security": "Legal",
+    "Job Skills": "Work",
+    "Family Oriented-Skills": "Care",
+    "Physical Health": "Health",
+    "Mental Health": "Health",
+    "Supporting Loved Ones": "Care",
+    "Supported Others Like Us": "Community Support Services",
+  };
+  
+  const filteredCategories =
+    selectedValue && selectedValue.text in categoryMapping
+      ? { [categoryMapping[selectedValue.text]]: findHelpCategories[categoryMapping[selectedValue.text]] }
+      : findHelpCategories;
   // Generate URL for findhelp.org
-  const generateFindHelpURL = (category, slug) =>
+  const generateFindHelpURL = (category: string, slug: any) =>
     `https://findhelp.org/${category.toLowerCase()}/${slug}--${city}?postal=${defaultZip}`;
 
   // Handle button click to update iframe URL
-  const handleCategoryClick = (category, slug) => {
+  const handleCategoryClick = (category: string, slug: string) => {
+    setSelectedCategory(slug);
     const url = generateFindHelpURL(category, slug);
     setIframeUrl(url);
   };
 
+  const handleGetHelpClose = () => {
+    setIsGetHelpOpen(false); // Close modal
+    setIframeUrl(""); // Remove iframe
+    setSelectedCategory(null); // Reset selected category
+  };
+
+
+  
   return (
     <div className="flex flex-row bg-orange-500 text-white p-2 text-lg h-12 absolute w-screen z-10 shadow-lg">
       <div className="flex flex-row gap-4">
@@ -124,14 +155,18 @@ export default function Navbar() {
 
             {/* Category Buttons */}
             <div className="mb-4 max-h-[250px] overflow-auto p-2 border border-gray-300 rounded">
-              {Object.entries(findHelpCategories).map(([category, subcategories]) => (
+              {Object.entries(filteredCategories).map(([category, subcategories]) => (
                 <div key={category} className="mb-2">
                   <h3 className="font-semibold text-lg text-gray-800">{category}</h3>
                   <div className="flex flex-wrap gap-2">
                     {subcategories.map(({ name, slug }) => (
                       <button
                         key={slug}
-                        className="bg-blue-500 text-white px-3 py-1 rounded text-sm hover:bg-blue-600"
+                        className={`px-3 py-1 rounded text-sm ${
+                          selectedCategory === slug
+                            ? "bg-green-600 text-white" // Selected state
+                            : "bg-blue-500 text-white hover:bg-blue-600" // Default state
+                        }`}
                         onClick={() => handleCategoryClick(category, slug)}
                       >
                         {name}
@@ -178,6 +213,8 @@ export default function Navbar() {
           </div>
         </div>
       )}
+
+      {user && <Logout />}
     </div>
   );
 }

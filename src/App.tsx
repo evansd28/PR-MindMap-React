@@ -1,5 +1,6 @@
-import { useState } from "react";
+import { useState, useContext } from "react";
 import { v4 as uuidv4 } from "uuid";
+import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import "./App.css";
 import AddMediaDisplay from "./components/AddMediaDisplay";
 import ImageSelectionDisplay from "./components/ImageSelectionDisplay";
@@ -12,6 +13,10 @@ import Navbar from "./components/Navbar";
 import AssetAccordian from "./components/AssetAccordian";
 import EditAssetTextDisplay from "./components/EditAssetTextDisplay";
 import FullImageDisplay from "./components/FullImageDisplay";
+import { AuthProvider, AuthContext } from "./context/AuthContext";
+import PrivateRoute from "./components/PrivateRoute";
+import Login from "./components/login";
+import Logout from "./components/Logout";
 
 export default function App() {
   const {
@@ -28,10 +33,17 @@ export default function App() {
     fullImageDisplay
   } = useAppContext();
 
+  const { user } = useContext(AuthContext);
+
   const [newNodeDisplay, setNewNodeDisplay] = useState<boolean>(false);
   const [mediaDisplay, setMediaDisplay] = useState<boolean>(false);
   const [imageSelectionDisplay, setImageSelectionDisplay] = useState<boolean>(false);
   const [mousePosition, setMousePosition] = useState<number[]>([0, 0]);
+
+  if (!user) {
+    return <Login />;
+  }
+  
   // function for adding node onto the canvas
   const addNodeToCanvas = (
     nodeType: string | undefined,

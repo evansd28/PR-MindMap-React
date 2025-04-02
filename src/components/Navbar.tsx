@@ -145,6 +145,7 @@ export default function Navbar() {
         >
           Browse Resources
         </p>
+        {user && <Logout />}
       </div>
 
       {/* Help Modal */}
@@ -214,7 +215,7 @@ export default function Navbar() {
         </div>
       )}
 
-      {user && <Logout />}
+      
     </div>
   );
 }

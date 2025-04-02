@@ -3,7 +3,9 @@ import { auth } from "../firebase";
 
 const Logout = () => {
   return (
-    <button onClick={() => signOut(auth)}>Logout</button>
+    <p className="hover:underline cursor-pointer" onClick={() => signOut(auth)}>
+        Logout
+    </p>
   );
 };
 

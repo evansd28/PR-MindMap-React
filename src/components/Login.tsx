@@ -13,7 +13,11 @@ const Login = () => {
   };
 
   return (
-    <button onClick={signInWithGoogle}>Sign in with Google</button>
+    <div className="flex flex-row bg-orange-500 text-white p-2 text-lg h-12 absolute w-screen z-10 shadow-lg">
+      <div className="flex flex-row gap-4">
+        <button onClick={signInWithGoogle}>Sign in with Google</button>
+      </div>
+    </div>
   );
 };
 

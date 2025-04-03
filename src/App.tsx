@@ -16,7 +16,6 @@ import FullImageDisplay from "./components/FullImageDisplay";
 import { AuthProvider, AuthContext } from "./context/AuthContext";
 import PrivateRoute from "./components/PrivateRoute";
 import Login from "./components/login";
-import Logout from "./components/Logout";
 
 export default function App() {
   const {
@@ -43,7 +42,7 @@ export default function App() {
   if (!user) {
     return <Login />;
   }
-  
+
   // function for adding node onto the canvas
   const addNodeToCanvas = (
     nodeType: string | undefined,

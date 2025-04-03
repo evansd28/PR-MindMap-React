@@ -130,7 +130,13 @@ export default function Navbar() {
     setSelectedCategory(null); // Reset selected category
   };
 
+  const [phoneNumber, setPhoneNumber] = useState("");
 
+  const handleSavePhoneNumber = () => {
+    console.log("Saved Phone Number:", phoneNumber);
+    alert("Phone number saved!");
+    //TODO: SAVE PHONE NUMBER TO DATABASE
+  };
   
   return (
     <div className="flex flex-row bg-orange-500 text-white p-2 text-lg h-12 absolute w-screen z-10 shadow-lg">
@@ -176,6 +182,26 @@ export default function Navbar() {
                   </div>
                 </div>
               ))}
+            </div>
+
+            <div className="mb-4">
+              <label htmlFor="phone" className="block font-medium text-gray-700">
+                Enter contact info:
+              </label>
+              <input
+                type="tel"
+                id="phone"
+                value={phoneNumber}
+                onChange={(e) => setPhoneNumber(e.target.value)}
+                className="border p-2 rounded w-full mt-1"
+                placeholder="e.g., (555) 123-4567"
+              />
+              <button
+                onClick={handleSavePhoneNumber}
+                className="mt-2 bg-green-500 text-white px-4 py-2 rounded w-full hover:bg-green-600"
+              >
+                Save Phone Number
+              </button>
             </div>
 
             {/* Dynamic Iframe */}

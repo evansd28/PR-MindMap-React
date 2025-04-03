@@ -3,15 +3,18 @@ import { Node, CanvasProps } from "../Types/types";
 import { useAppContext } from "../context/Context";
 import html2canvas from "html2canvas";
 import getDateString from "../getDateString";
-import { useRef } from "react";
+import { useRef, useEffect } from "react";
 
 export default function Canvas({
     getNodePosition,
     handleAddMedia,
-    removeNode
+    removeNode,
 }: CanvasProps) {
     const { selectedValue } = useAppContext();
     const imageRef = useRef<HTMLDivElement | null>(null);
+
+    useEffect(() => {
+    }, [selectedValue, selectedValue.childNodes, ...selectedValue.childNodes.flatMap(role => role.childNodes)]);
 
     const generateImage = () => {
         if (imageRef.current) {
@@ -103,9 +106,7 @@ export default function Canvas({
                                 removeNode={removeNode}
                             />
                         )
-
                     })
-
                 );
             })}
             <button

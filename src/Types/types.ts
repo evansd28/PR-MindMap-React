@@ -8,6 +8,13 @@ export interface Node {
     video: string;
     childNodes: Node[];
 }
+export interface Connection {
+    id: string;
+    from: string;
+    to: string;
+    fromPosition: { x: number; y: number };
+    toPosition: { x: number; y: number };
+}
 
 export interface ContextState {
     nodes: Node[];
@@ -35,6 +42,12 @@ export interface ContextState {
     setEditTextDisplay: React.Dispatch<React.SetStateAction<boolean>>;
     expandedImage: string | undefined;
     setExpandedImage: React.Dispatch<React.SetStateAction<string | undefined>>;
+    updateNodePosition: (nodeId: string, newPosition: { x: number; y: number }) => void;
+    updateConnections: () => void;
+    connections: Connection[];
+    setConnections: React.Dispatch<React.SetStateAction<Connection[]>>;
+    addConnection: (from: string, to: string) => void;
+    removeConnection: (connectionId: string) => void;
 }
 
 export interface CanvasProps {

@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect, useRef } from "react";
 import { useAppContext } from "../context/Context";
 import { MapNodeProps } from "../Types/types";
 
@@ -7,9 +7,15 @@ export default function MapNode({
   handleAddMedia,
   removeNode,
 }: MapNodeProps) {
-  const { setVideo, setVideoPlayer, setEditTextDisplay, setActiveNodeId, setExpandedImage, setFullImageDisplay } = useAppContext();
+  const { setVideo, setVideoPlayer, setEditTextDisplay, setActiveNodeId, setExpandedImage, setFullImageDisplay, updateNodePosition, updateConnections } = useAppContext();
   const [showEditFeatures, setShowEditFeatures] = useState<boolean>(false);
-  const [canDrag, setCanDrag] = useState<boolean>(false);
+  const [isDragging, setIsDragging] = useState<boolean>(false);
+  const dragOffset = useRef({ x: 0, y: 0 });
+  const [position, setPosition] = useState(node.position);
+
+  useEffect(() => {
+    setPosition(node.position);
+}, [node.position]);
 
   const getBorderColor = (nodeType: string) => {
     if (nodeType === "value") {
@@ -21,24 +27,43 @@ export default function MapNode({
     }
   };
 
-  const moveNode = (e: React.MouseEvent) => {
+  const moveDown = (e: React.MouseEvent<HTMLDivElement>) => {
     //e.stopPropagation();
-    console.log(canDrag)
-    if (canDrag) {
-      const initialX = node.position.x; 
-      const initialY = node.position.y; 
-      const offsetX = e.clientX - initialX; 
-      const offsetY = e.clientY - initialY; 
+    setIsDragging(true);
+        dragOffset.current = {
+            x: e.clientX - position.x,
+            y: e.clientY - position.y,
+        };
+        e.stopPropagation();
+    };
 
-      document.onmousemove = (event) => {
-        node.position.x = event.clientX - offsetX;
-        node.position.y = event.clientY - offsetY; 
+    useEffect(() => {
+      const mouseMove = (e: MouseEvent) => {
+          if (isDragging) {
+              setPosition({
+                  x: e.clientX - dragOffset.current.x,
+                  y: e.clientY - dragOffset.current.y,
+              });
+          }
       };
-    } else {
-      document.onmousemove = null;
-      document.onclick = null;
+      const moveUp = () => {
+        if (isDragging) {
+            setIsDragging(false);
+            updateNodePosition(node.id, position);
+            updateConnections();
+        }
+    };
+
+    if (isDragging) {
+      document.addEventListener("mousemove", mouseMove);
+      document.addEventListener("mouseup", moveUp);
     }
-  }
+    return () => {
+      document.removeEventListener("mousemove", mouseMove);
+      document.removeEventListener("mouseup", moveUp);
+    };
+  }, [isDragging, position, node.id, updateNodePosition, updateConnections]);
+
 
   return (
     <div
@@ -49,19 +74,15 @@ export default function MapNode({
         key={node.id}
         className={`absolute flex flex-col items-center justify-center rounded-${node.nodeType === 'value' && 'full' || node.nodeType === 'role' && 'xl'} font-semibold text-center bg-white border-4 hover:cursor-pointer`}
         style={{
-          left: node.position.x,
-          top: node.position.y,
+          left: position.x,
+          top: position.y,
           borderColor: getBorderColor(node.nodeType),
           width: "110px",
           height: "110px",
           borderRadius: node.nodeType === 'value' ? '100%' : undefined
         }}
-        onClick={(e) => {
-          e.stopPropagation();
-          setCanDrag(!canDrag);
-          moveNode(e);
-        }}
-      >
+        onMouseDown = {moveDown}
+        >
         {
           // hide the input if the node has an image
           !node.image  && (!showEditFeatures || node.nodeType === 'value') && <h1>{node.text}</h1>

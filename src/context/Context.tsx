@@ -1,5 +1,5 @@
 import React, { createContext, useContext, useEffect, useState } from 'react';
-import { ContextState, Node } from '../Types/types';
+import { ContextState, Node, Connection } from '../Types/types';
 import { v4 as uuidv4 } from 'uuid';
 
 const AppContext = createContext<ContextState | undefined>(undefined);
@@ -38,10 +38,81 @@ const [assetNodes, setAssetNodes] = useState<Node[]>([]);
 const [newNodeDisplay, setNewNodeDisplay] = useState<boolean>(false);
 const [editTextDisplay, setEditTextDisplay] = useState<boolean>(false);
 const [expandedImage, setExpandedImage] = useState<string | undefined>();
+const [connections, setConnections] = useState<Connection[]>([]);
 
 useEffect(() => {
     console.log(selectedValue.childNodes)
 }, [selectedValue])
+
+const updateNodePosition = (nodeId: string, newPosition: { x: number; y: number }) => {
+    setNodes(prevNodes =>
+        prevNodes.map(node =>
+            node.id === nodeId ? { ...node, position: newPosition } : node
+        )
+    );
+    setValueNodes(prevValueNodes =>
+        prevValueNodes.map(node =>
+            node.id === nodeId ? { ...node, position: newPosition } : node
+        )
+    );
+    setRoleNodes(prevRoleNodes =>
+        prevRoleNodes.map(node =>
+            node.id === nodeId ? { ...node, position: newPosition } : node
+        )
+    );
+    setAssetNodes(prevAssetNodes =>
+        prevAssetNodes.map(node =>
+            node.id === nodeId ? { ...node, position: newPosition } : node
+        )
+    );
+    setSelectedValue(prevSelectedValue => {
+        const updatedSelectedValue = { ...prevSelectedValue, childNodes: prevSelectedValue.childNodes.map(role => ({
+            ...role,
+            childNodes: role.childNodes.map(asset => {
+                if (asset.id === nodeId) {
+                    return { ...asset, position: newPosition };
+                }
+                return asset;
+            }),
+            position: role.id === nodeId ? newPosition : role.position,
+            })),
+                position: prevSelectedValue.id === nodeId ? newPosition : prevSelectedValue.position,
+        };
+            return updatedSelectedValue;
+     });
+
+
+    updateConnections();
+};
+const updateConnections = () => {
+    const updatedConnections = connections.map(connection => {
+        const fromNode = nodes.find(node => node.id === connection.from);
+        const toNode = nodes.find(node => node.id === connection.to);
+
+        if (fromNode && toNode) {
+            return {
+                ...connection,
+                fromPosition: fromNode.position,
+                toPosition: toNode.position,
+            };
+        }
+        return connection;
+    });
+    setConnections(updatedConnections);
+};
+const addConnection = (from: string, to: string) => {
+  setConnections(prevConnections => [...prevConnections, {
+    id: uuidv4(),
+    from: from,
+    to: to,
+    fromPosition: nodes.find(node => node.id === from)?.position || {x:0, y:0},
+    toPosition: nodes.find(node => node.id === to)?.position || {x:0, y:0},
+  }])
+}
+
+const removeConnection = (connectionId: string) => {
+  setConnections(prevConnections => prevConnections.filter(connection => connection.id !== connectionId))
+}
 
 return (
     <AppContext.Provider value={{
@@ -69,7 +140,13 @@ return (
         editTextDisplay,
         setEditTextDisplay,
         expandedImage,
-        setExpandedImage
+        setExpandedImage,
+        updateNodePosition,
+        updateConnections,
+        connections,
+        setConnections,
+        addConnection,
+        removeConnection,
     }}>
         {children}
     </AppContext.Provider>

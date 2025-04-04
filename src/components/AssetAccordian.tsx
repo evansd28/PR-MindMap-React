@@ -13,7 +13,7 @@ export default function AssetAccordian() {
                     onClick={() => setShowAccordian(!showAccordian)}
                 >
                     {showAccordian ?
-                        'hide' : 'show'
+                        'Hide' : 'Show'
                     }
                 </button>
                 <div className={`text-center flex flex-col ${!showAccordian && `hidden`}`}>

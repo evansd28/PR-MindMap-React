@@ -9,6 +9,8 @@ export default function Navbar() {
   const [isGetHelpOpen, setIsGetHelpOpen] = useState(false);
   const [iframeUrl, setIframeUrl] = useState("");
   const [selectedCategory, setSelectedCategory] = useState<string | null>(null); // State to track selected category
+  const [phoneNumber, setPhoneNumber] = useState("");
+  const [phoneError, setPhoneError] = useState("");
 
   const { user } = useContext(AuthContext);
 
@@ -128,14 +130,23 @@ export default function Navbar() {
     setIsGetHelpOpen(false); // Close modal
     setIframeUrl(""); // Remove iframe
     setSelectedCategory(null); // Reset selected category
+    setPhoneNumber("");
+    setPhoneError("");
+  };
+  const handlePhoneNumberChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setPhoneNumber(e.target.value);
+    setPhoneError("");
   };
 
-  const [phoneNumber, setPhoneNumber] = useState("");
-
   const handleSavePhoneNumber = () => {
-    console.log("Saved Phone Number:", phoneNumber);
-    alert("Phone number saved!");
+    const cleanedNumber = phoneNumber.replace(/\D/g, '');
+    if (cleanedNumber.length === 10) {
+      console.log("Saved Phone Number:", cleanedNumber);
+      alert("Phone number saved!");
     //TODO: SAVE PHONE NUMBER TO DATABASE
+    } else {
+      setPhoneError("Please enter a 10-digit phone number.");
+    }
   };
   
   return (
@@ -143,7 +154,7 @@ export default function Navbar() {
       <div className="flex flex-row gap-4">
         <h1 className="font-semibold">STRIVE</h1>
         <p className="hover:underline cursor-pointer" onClick={handleDialogOpen}>
-          How to use
+          How to Use
         </p>
         <p
           className="hover:underline cursor-pointer"
@@ -193,9 +204,10 @@ export default function Navbar() {
                 id="phone"
                 value={phoneNumber}
                 onChange={(e) => setPhoneNumber(e.target.value)}
-                className="border p-2 rounded w-full mt-1"
-                placeholder="e.g., (555) 123-4567"
+                className={`border p-2 rounded w-full mt-1 ${phoneError ? 'border-red-500' : ''}`}
+                placeholder="e.g., (123) 456-7890"
               />
+              {phoneError && <p className="text-red-500 text-sm mt-1">{phoneError}</p>}
               <button
                 onClick={handleSavePhoneNumber}
                 className="mt-2 bg-green-500 text-white px-4 py-2 rounded w-full hover:bg-green-600"
@@ -224,12 +236,12 @@ export default function Navbar() {
       {isDialogOpen && (
         <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
           <div className="bg-white p-4 rounded-xl border-4 border-gray-300 shadow-lg text-black">
-            <h2 className="text-xl font-semibold mb-4 text-center">How to use</h2>
+            <h2 className="text-xl font-semibold mb-4 text-center">How to Use</h2>
             <ul className="list-disc list-inside">
               <li>Select a node from the left sidebar and click on the canvas to add it.</li>
               <li>Click on a node to edit its text or add an image or video.</li>
               <li>Click on the "Start Recording" button to record audio.</li>
-              <li>You can also click on the node to move around the map.</li>
+              <li>You can also click on the node to move them around the map.</li>
             </ul>
             <button
               className="mt-4 bg-red-500 text-white px-4 py-2 rounded flex m-auto"

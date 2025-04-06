@@ -133,11 +133,7 @@ export default function Navbar() {
     setPhoneNumber("");
     setPhoneError("");
   };
-  const handlePhoneNumberChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setPhoneNumber(e.target.value);
-    setPhoneError("");
-  };
-
+ 
   const handleSavePhoneNumber = () => {
     const cleanedNumber = phoneNumber.replace(/\D/g, '');
     if (cleanedNumber.length === 10) {

@@ -1,4 +1,5 @@
-import { useState, useContext } from "react";
+import { useState, useContext, useEffect } from "react";
+import { getFirestore, doc, updateDoc, arrayUnion, getDoc, setDoc } from "firebase/firestore";
 import { useAppContext } from "../context/Context";
 import { AuthContext } from "../context/AuthContext";
 import Logout from "./Logout";
@@ -9,6 +10,7 @@ export default function Navbar() {
   const [isGetHelpOpen, setIsGetHelpOpen] = useState(false);
   const [iframeUrl, setIframeUrl] = useState("");
   const [selectedCategory, setSelectedCategory] = useState<string | null>(null); // State to track selected category
+  const [phoneError, setPhoneError] = useState("");
 
   const { user } = useContext(AuthContext);
 
@@ -131,11 +133,66 @@ export default function Navbar() {
   };
 
   const [phoneNumber, setPhoneNumber] = useState("");
+  const [contactName, setContactName] = useState<string>("");
+  const [savedContacts, setSavedContacts] = useState<{ name: string; number: string }[]>([]);
 
-  const handleSavePhoneNumber = () => {
-    console.log("Saved Phone Number:", phoneNumber);
-    alert("Phone number saved!");
-    //TODO: SAVE PHONE NUMBER TO DATABASE
+  const db = getFirestore();
+
+  const fetchContacts = async () => {
+    if (!user) return;
+  
+    const userRef = doc(db, "users", user.uid);
+    const userSnap = await getDoc(userRef);
+  
+    if (userSnap.exists()) {
+      const data = userSnap.data();
+      if (data.contacts) {
+        setSavedContacts(data.contacts);
+      }
+    }
+  };
+  
+  useEffect(() => {
+    fetchContacts();
+  }, [user]);
+
+  const handleSavePhoneNumber = async () => {
+    if (!user) return alert("You must be logged in to save a contact.");
+    if (!contactName || !phoneNumber) return alert("Please enter both name and phone number.");
+    const cleanedNumber = phoneNumber.replace(/\D/g, '');
+    const newContact = {
+      name: contactName,
+      number: phoneNumber,
+    };
+    if(cleanedNumber.length==10){
+      try {
+        const userRef = doc(db, "users", user.uid);
+        await updateDoc(userRef, {
+          contacts: arrayUnion(newContact),
+        });
+
+        alert("Contact saved!");
+        setContactName("");
+        setPhoneNumber("");
+        fetchContacts();
+      } catch (error) {
+        // If document doesn't exist yet
+        if (error.code === "not-found") {
+          await setDoc(doc(db, "users", user.uid), {
+            contacts: [newContact],
+          });
+          alert("Contact saved!");
+          setContactName("");
+          setPhoneNumber("");
+          fetchContacts();
+        } else {
+          console.error("Error saving contact:", error);
+          alert("Something went wrong.");
+        }
+      }
+    } else {
+      setPhoneError("Please enter a 10-digit phone number.");
+    }
   };
   
   return (
@@ -183,7 +240,18 @@ export default function Navbar() {
                 </div>
               ))}
             </div>
-
+            {/* Contact Name Input */}
+            <div className="mb-2">
+              <label className="block text-gray-700 font-semibold mb-1">Program/Organization</label>
+              <input
+                type="text"
+                value={contactName}
+                onChange={(e) => setContactName(e.target.value)}
+                placeholder="e.g. Housing Assistance/VLP of W. PA"
+                className="w-full p-2 border border-gray-300 rounded"
+              />
+            </div>
+            {/* Phone Number Input */}
             <div className="mb-4">
               <label htmlFor="phone" className="block font-medium text-gray-700">
                 Enter contact info:
@@ -196,6 +264,7 @@ export default function Navbar() {
                 className="border p-2 rounded w-full mt-1"
                 placeholder="e.g., (555) 123-4567"
               />
+              {phoneError && <p className="text-red-500 text-sm mt-1">{phoneError}</p>}
               <button
                 onClick={handleSavePhoneNumber}
                 className="mt-2 bg-green-500 text-white px-4 py-2 rounded w-full hover:bg-green-600"
@@ -207,6 +276,20 @@ export default function Navbar() {
             {/* Dynamic Iframe */}
             {iframeUrl && (
               <iframe src={iframeUrl} width="100%" height="400" className="border rounded"></iframe>
+            )}
+
+            {/*Saved numbers */}
+            {savedContacts.length > 0 && (
+              <div className="mt-4">
+                <h4 className="font-semibold text-gray-800 mb-2">Saved Contacts:</h4>
+                <ul className="list-disc list-inside text-gray-700">
+                  {savedContacts.map((contact, idx) => (
+                    <li key={idx}>
+                      <span className="font-semibold">{contact.name}:</span> {contact.number}
+                    </li>
+                  ))}
+                </ul>
+              </div>
             )}
 
             {/* Close Button */}

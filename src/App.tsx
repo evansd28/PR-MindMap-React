@@ -120,7 +120,7 @@ export default function App() {
   // right now will prompt the user to add a youtube link
   // Most likely gonna get changed soon
   const handleAddVideo = () => {
-    const query = prompt("paste a link to a youtube video here:");
+    const query = prompt("Paste a link to a Youtube Video here:");
     if (query) {
       setVideo(query);
       addVideoToNode(activeNodeId, query);

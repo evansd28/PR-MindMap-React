@@ -15,7 +15,7 @@ import EditAssetTextDisplay from "./components/EditAssetTextDisplay";
 import FullImageDisplay from "./components/FullImageDisplay";
 import { AuthProvider, AuthContext } from "./context/AuthContext";
 import PrivateRoute from "./components/PrivateRoute";
-import Login from "./components/login";
+import Login from "./components/Login";
 
 export default function App() {
   const {

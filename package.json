@@ -13,8 +13,13 @@
     "deploy": "gh-pages -d dist"
   },
   "dependencies": {
+    "@emotion/react": "^11.14.0",
+    "@emotion/styled": "^11.14.0",
+    "@mui/material": "^7.0.1",
+    "@tabler/icons-react": "^3.31.0",
     "firebase": "^11.6.0",
     "html2canvas": "^1.4.1",
+    "lodash": "^4.17.21",
     "pr-mm-pt-react-ts": "file:",
     "react": "^18.3.1",
     "react-dom": "^18.3.1",

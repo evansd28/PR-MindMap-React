@@ -3,9 +3,9 @@ import { getFirestore, doc, updateDoc, arrayUnion, getDoc, setDoc } from "fireba
 import { useAppContext } from "../context/Context";
 import { AuthContext } from "../context/AuthContext";
 import Logout from "./Logout";
-import { saveMap } from "../local/saveMap";
-import { getMaps } from "../local/getMaps";
-import { deleteMap } from "../local/deleteMap";
+import { saveMap } from "./saveMap";
+import { getMaps } from "./getMaps";
+import { deleteMap } from "./deleteMap";
 import { v4 as uuidv4 } from "uuid";
 
 export default function Navbar() {
@@ -167,7 +167,6 @@ export default function Navbar() {
     "Supporting Loved Ones": "Care",
     "Supported Others Like Us": "Community Support Services",
   };
-
   const filteredCategories =
     selectedValue && selectedValue.text in categoryMapping
       ? { [categoryMapping[selectedValue.text]]: findHelpCategories[categoryMapping[selectedValue.text]] }

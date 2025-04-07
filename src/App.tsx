@@ -1,6 +1,5 @@
 import { useState, useContext } from "react";
 import { v4 as uuidv4 } from "uuid";
-import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import "./App.css";
 import AddMediaDisplay from "./components/AddMediaDisplay";
 import ImageSelectionDisplay from "./components/ImageSelectionDisplay";
@@ -13,9 +12,8 @@ import Navbar from "./components/Navbar";
 import AssetAccordian from "./components/AssetAccordian";
 import EditAssetTextDisplay from "./components/EditAssetTextDisplay";
 import FullImageDisplay from "./components/FullImageDisplay";
-import { AuthProvider, AuthContext } from "./context/AuthContext";
-import PrivateRoute from "./components/PrivateRoute";
-import Login from "./components/Login";
+import { AuthContext } from "./context/AuthContext";
+import Login from "./components/login";
 
 export default function App() {
   const {
@@ -32,30 +30,31 @@ export default function App() {
     fullImageDisplay
   } = useAppContext();
 
-  const { user } = useContext(AuthContext);
+  const { user, loading } = useContext(AuthContext); // ✅ Load auth state properly
 
   const [newNodeDisplay, setNewNodeDisplay] = useState<boolean>(false);
   const [mediaDisplay, setMediaDisplay] = useState<boolean>(false);
   const [imageSelectionDisplay, setImageSelectionDisplay] = useState<boolean>(false);
   const [mousePosition, setMousePosition] = useState<number[]>([0, 0]);
 
+  // ✅ Wait for Firebase to load auth status
+  if (loading) {
+    return <div className="text-center mt-10 text-lg">🔄 Loading...</div>;
+  }
+
   if (!user) {
     return <Login />;
   }
 
-  // function for adding node onto the canvas
   const addNodeToCanvas = (
     nodeType: string | undefined,
     nodeText: string | undefined,
     mousePosition: number[],
     connectingNode: Node
   ) => {
-    // createa a new node
     if (nodeType === 'role' && nodeText?.length === 0) {
-      alert('cannot have empty text field')
+      alert('cannot have empty text field');
     } else {
-
-
       const newNode = {
         id: uuidv4(),
         position: { x: mousePosition[0], y: mousePosition[1] },
@@ -67,58 +66,43 @@ export default function App() {
         childNodes: []
       };
 
-      // if its a role, then add the node into the role nodes
-      // also connect it to the center value node
       if (newNode.nodeType === "role") {
         selectedValue.childNodes.push(newNode);
       }
 
-      // add asset node to the asset nodes
       if (newNode.nodeType === "asset") {
         selectedValue.childNodes.map((role) => {
           if (role.id === connectingNode.id) {
-            role.childNodes.push(newNode)
+            role.childNodes.push(newNode);
           }
-        })
+        });
       }
-      // hide new node display
+
       setNewNodeDisplay(false);
-      console.log("selected value", selectedValue)
-      // update the list of all nodes
-      // setNodes((prev) => [...prev, newNode]);
     }
   };
 
-  // gets the current position of where the user clicked so that the node can be palced there
   const getNodePosition = (e: React.MouseEvent<HTMLDivElement>) => {
-    // mouse position has to be modified since by default it starts at the top left of the node instead of the center
-    // offset it by half the the node size to get mouse clicks centered
     setMousePosition([e.clientX - (110 / 2), e.clientY - (110 / 2)]);
     if (!editTextDisplay) {
       setNewNodeDisplay(true);
     }
   };
 
-  // helper function for the add media display
   const handleAddMedia = (
     e: React.MouseEvent<HTMLButtonElement>,
     nodeId: string
   ) => {
-    // prevents a new node being added on top when clicking on a node
     e.stopPropagation();
     setMediaDisplay(true);
-    // set the active node ID so that way we can place the image at the node we want
     setActiveNodeId(nodeId);
   };
 
-  // brings up/hides some displays
   const handleAddImage = async () => {
     setImageSelectionDisplay(true);
     setMediaDisplay(false);
   };
 
-  // right now will prompt the user to add a youtube link
-  // Most likely gonna get changed soon
   const handleAddVideo = () => {
     const query = prompt("Paste a link to a Youtube Video here:");
     if (query) {
@@ -127,7 +111,6 @@ export default function App() {
     }
   };
 
-  // update the current node to have an image take up the entire node surface area
   const addImageToNode = (
     activeNodeId: string | undefined,
     image: string | undefined
@@ -136,9 +119,7 @@ export default function App() {
       selectedValue.childNodes.forEach((role) => {
         role.childNodes.forEach((asset) => {
           if (asset.id === activeNodeId) {
-            if (asset.video) {
-              asset.video = ""; // if user tries to update a video node to an image node, it removes the video
-            }
+            if (asset.video) asset.video = "";
             asset.image = image;
           }
         });
@@ -147,7 +128,6 @@ export default function App() {
     setImageSelectionDisplay(false);
   };
 
-  // just like adding images except this one adds a link to access the video p
   const addVideoToNode = (
     activeNodeId: string | undefined,
     video: string | undefined
@@ -156,9 +136,7 @@ export default function App() {
       selectedValue.childNodes.forEach((role) => {
         role.childNodes.forEach((asset) => {
           if (asset.id === activeNodeId) {
-            if (asset.image) {
-              asset.image = ""; // if user tries to update an image node to a video node, it removes the image
-            }
+            if (asset.image) asset.image = "";
             asset.video = video;
           }
         });
@@ -167,14 +145,7 @@ export default function App() {
     setMediaDisplay(false);
   };
 
-  // removes a node from the array
-  // still have to update this for asset nodes as well since removing a role node doesn't remove its asset nodes
-  const removeNode = (
-    node: Node
-  ) => {
-    //e.stopPropagation();
-    console.log("click");
-
+  const removeNode = (node: Node) => {
     if (node.nodeType === 'role') {
       selectedValue.childNodes = selectedValue.childNodes.filter(role => role.id !== node.id);
     } else {
@@ -197,9 +168,7 @@ export default function App() {
     <>
       <Navbar />
       <main className="flex">
-        {!fullImageDisplay && !videoPlayer &&
-          <AssetAccordian />
-        }
+        {!fullImageDisplay && !videoPlayer && <AssetAccordian />}
         <Canvas
           getNodePosition={getNodePosition}
           handleAddMedia={handleAddMedia}
@@ -215,7 +184,6 @@ export default function App() {
               zIndex: 50,
             }}
           >
-            {/* {addMediaDisplay({ handleAddImage, handleAddVideo })} */}
             <AddMediaDisplay
               handleAddImage={handleAddImage}
               handleAddVideo={handleAddVideo}
@@ -256,9 +224,7 @@ export default function App() {
             setVideoPlayer={setVideoPlayer}
           />
         )}
-        {fullImageDisplay &&
-          <FullImageDisplay />
-        }
+        {fullImageDisplay && <FullImageDisplay />}
         {editTextDisplay && (
           <div
             className="media-display absolute rounded-xl w-1/3"

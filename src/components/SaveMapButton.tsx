@@ -1,7 +1,7 @@
 import { useContext } from "react";
 import { AuthContext } from "../context/AuthContext";
 import { useAppContext } from "../context/Context";
-import { saveMap } from "./saveMap";
+import { saveMap } from "../saveMap";
 import { v4 as uuidv4 } from "uuid";
 
 export default function SaveMapButton() {

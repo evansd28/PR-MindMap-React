@@ -3,9 +3,9 @@ import { getFirestore, doc, updateDoc, arrayUnion, getDoc, setDoc } from "fireba
 import { useAppContext } from "../context/Context";
 import { AuthContext } from "../context/AuthContext";
 import Logout from "./Logout";
-import { saveMap } from "./saveMap";
-import { getMaps } from "./getMaps";
-import { deleteMap } from "./deleteMap";
+import { saveMap } from "../saveMap";
+import { getMaps } from "../getMaps";
+import { deleteMap } from "../deleteMap";
 import { v4 as uuidv4 } from "uuid";
 
 export default function Navbar() {
@@ -24,6 +24,9 @@ export default function Navbar() {
   const [mapTitle, setMapTitle] = useState("");
   const [showMapsModal, setShowMapsModal] = useState(false);
   const [savedMaps, setSavedMaps] = useState<any[]>([]);
+
+  const handleDialogOpen = () => setIsDialogOpen(true);
+  const handleDialogClose = () => setIsDialogOpen(false);
 
   const db = getFirestore();
 
@@ -244,7 +247,98 @@ export default function Navbar() {
           </>
         )}
       </div>
+      {/* Help Modal */}
+      {isGetHelpOpen && (
+        <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
+          <div className="bg-white p-6 rounded-xl border-4 border-gray-300 shadow-lg text-black w-[700px] max-h-[80vh] overflow-auto">
+            <h2 className="text-xl font-semibold mb-4 text-center">Find Help Resources</h2>
 
+            {/* Category Buttons */}
+            <div className="mb-4 max-h-[250px] overflow-auto p-2 border border-gray-300 rounded">
+              {Object.entries(filteredCategories).map(([category, subcategories]) => (
+                <div key={category} className="mb-2">
+                  <h3 className="font-semibold text-lg text-gray-800">{category}</h3>
+                  <div className="flex flex-wrap gap-2">
+                    {subcategories.map(({ name, slug }) => (
+                      <button
+                        key={slug}
+                        className={`px-3 py-1 rounded text-sm ${
+                          selectedCategory === slug
+                            ? "bg-green-600 text-white" // Selected state
+                            : "bg-blue-500 text-white hover:bg-blue-600" // Default state
+                        }`}
+                        onClick={() => handleCategoryClick(category, slug)}
+                      >
+                        {name}
+                      </button>
+                    ))}
+                  </div>
+                </div>
+              ))}
+            </div>
+            {/* Contact Name Input */}
+            <div className="mb-2">
+              <label className="block text-gray-700 font-semibold mb-1">Program/Organization</label>
+              <input
+                type="text"
+                value={contactName}
+                onChange={(e) => setContactName(e.target.value)}
+                placeholder="e.g. Housing Assistance/VLP of W. PA"
+                className="w-full p-2 border border-gray-300 rounded"
+              />
+            </div>
+            {/* Phone Number Input */}
+            <div className="mb-4">
+              <label htmlFor="phone" className="block font-medium text-gray-700">
+                Enter contact info:
+              </label>
+              <input
+                type="tel"
+                id="phone"
+                value={phoneNumber}
+                onChange={(e) => setPhoneNumber(e.target.value)}
+                className={`border p-2 rounded w-full mt-1 ${phoneError ? 'border-red-500' : ''}`}
+                placeholder="e.g., (123) 456-7890"
+              />
+              {phoneError && <p className="text-red-500 text-sm mt-1">{phoneError}</p>}
+              {phoneError && <p className="text-red-500 text-sm mt-1">{phoneError}</p>}
+              <button
+                onClick={handleSavePhoneNumber}
+                className="mt-2 bg-green-500 text-white px-4 py-2 rounded w-full hover:bg-green-600"
+              >
+                Save Phone Number
+              </button>
+            </div>
+
+            {/* Dynamic Iframe */}
+            {iframeUrl && (
+              <iframe src={iframeUrl} width="100%" height="400" className="border rounded"></iframe>
+            )}
+
+            {/*Saved numbers */}
+            {savedContacts.length > 0 && (
+              <div className="mt-4">
+                <h4 className="font-semibold text-gray-800 mb-2">Saved Contacts:</h4>
+                <ul className="list-disc list-inside text-gray-700">
+                  {savedContacts.map((contact, idx) => (
+                    <li key={idx}>
+                      <span className="font-semibold">{contact.name}:</span> {contact.number}
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            )}
+
+            {/* Close Button */}
+            <button
+              className="mt-4 bg-red-500 text-white px-4 py-2 rounded flex m-auto"
+              onClick={handleGetHelpClose}
+            >
+              Close
+            </button>
+          </div>
+        </div>
+      )}
       {/* 💾 Save Modal */}
       {showSaveModal && (
         <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50">
@@ -261,6 +355,27 @@ export default function Navbar() {
               <button onClick={() => setShowSaveModal(false)} className="bg-red-500 text-white px-4 py-2 rounded w-1/2">Cancel</button>
               <button onClick={handleSaveMap} className="bg-green-600 text-white px-4 py-2 rounded w-1/2">Save</button>
             </div>
+          </div>
+        </div>
+      )}
+
+      {/* Instructions Modal */}
+      {isDialogOpen && (
+        <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
+          <div className="bg-white p-4 rounded-xl border-4 border-gray-300 shadow-lg text-black">
+            <h2 className="text-xl font-semibold mb-4 text-center">How to Use</h2>
+            <ul className="list-disc list-inside">
+              <li>Select a node from the left sidebar and click on the canvas to add it.</li>
+              <li>Click on a node to edit its text or add an image or video.</li>
+              <li>Click on the "Start Recording" button to record audio.</li>
+              <li>You can also click on the node to move them around the map.</li>
+            </ul>
+            <button
+              className="mt-4 bg-red-500 text-white px-4 py-2 rounded flex m-auto"
+              onClick={handleDialogClose}
+            >
+              Close
+            </button>
           </div>
         </div>
       )}
@@ -311,5 +426,6 @@ export default function Navbar() {
         </div>
       )}
     </div>
+    
   );
 }

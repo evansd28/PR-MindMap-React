@@ -13,7 +13,7 @@ import AssetAccordian from "./components/AssetAccordian";
 import EditAssetTextDisplay from "./components/EditAssetTextDisplay";
 import FullImageDisplay from "./components/FullImageDisplay";
 import { AuthContext } from "./context/AuthContext";
-import Login from "./components/login";
+import Login from "./components/Login";
 
 export default function App() {
   const {
@@ -30,17 +30,13 @@ export default function App() {
     fullImageDisplay
   } = useAppContext();
 
-  const { user, loading } = useContext(AuthContext); // ✅ Load auth state properly
+  const { user} = useContext(AuthContext);
 
   const [newNodeDisplay, setNewNodeDisplay] = useState<boolean>(false);
   const [mediaDisplay, setMediaDisplay] = useState<boolean>(false);
   const [imageSelectionDisplay, setImageSelectionDisplay] = useState<boolean>(false);
   const [mousePosition, setMousePosition] = useState<number[]>([0, 0]);
 
-  // ✅ Wait for Firebase to load auth status
-  if (loading) {
-    return <div className="text-center mt-10 text-lg">🔄 Loading...</div>;
-  }
 
   if (!user) {
     return <Login />;

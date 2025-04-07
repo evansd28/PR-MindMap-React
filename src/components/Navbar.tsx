@@ -25,7 +25,7 @@ export default function Navbar() {
   const [showMapsModal, setShowMapsModal] = useState(false);
   const [savedMaps, setSavedMaps] = useState<any[]>([]);
 
-  const handleDialogOpen = () => setIsDialogOpen(true);
+  //const handleDialogOpen = () => setIsDialogOpen(true);
   const handleDialogClose = () => setIsDialogOpen(false);
 
   const db = getFirestore();
@@ -81,7 +81,7 @@ export default function Navbar() {
   const defaultZip = "15224";
   const city = "pittsburgh-pa";
 
-  const findHelpCategories = {
+  const findHelpCategories: Record<string, { name: string; slug: string }[]> = {
     Food: [
       { name: "Emergency Food", slug: "emergency-food" },
       { name: "Food Delivery", slug: "food-delivery" },

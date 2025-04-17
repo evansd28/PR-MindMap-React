@@ -9,7 +9,7 @@ import { deleteMap } from "../deleteMap";
 import { v4 as uuidv4 } from "uuid";
 
 export default function Navbar() {
-  const { nodes, setNodes, assetNodes, setAssetNodes, selectedValue } = useAppContext();
+  const { nodes, setNodes, setAssetNodes, selectedValue } = useAppContext();
   const { user } = useContext(AuthContext);
 
   const [isDialogOpen, setIsDialogOpen] = useState(false);

@@ -20,7 +20,7 @@ export default function SaveMapButton() {
     };
 
     try {
-      await saveMap(user.uid, mapId, mapData);
+      await saveMap(user.uid, mapId, selectedValue, mapData.title);
       alert("✅ Map saved successfully!");
     } catch (err) {
       console.error("❌ Failed to save map:", err);

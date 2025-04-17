@@ -9,7 +9,7 @@ import { deleteMap } from "../deleteMap";
 import { v4 as uuidv4 } from "uuid";
 
 export default function Navbar() {
-  const { nodes, setNodes, selectedValue } = useAppContext();
+  const { nodes, setNodes, assetNodes, setAssetNodes, selectedValue } = useAppContext();
   const { user } = useContext(AuthContext);
 
   const [isDialogOpen, setIsDialogOpen] = useState(false);
@@ -44,7 +44,8 @@ export default function Navbar() {
     };
 
     try {
-      await saveMap(user.uid, mapId, mapData);
+      await saveMap(user.uid, mapId, selectedValue, mapTitle);
+      console.log("Saving map data:", mapData);
       alert("✅ Map saved!");
       setMapTitle("");
       setShowSaveModal(false);
@@ -396,6 +397,7 @@ export default function Navbar() {
                       <button
                         onClick={() => {
                           setNodes(map.nodes);
+                          setAssetNodes(map.nodes.filter((node: any) => node.nodeType === 'asset'));
                           setShowMapsModal(false);
                           const root = map.nodes.find((node: any) => node.nodeType === "value");
                           if (root) {

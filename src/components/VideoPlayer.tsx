@@ -1,7 +1,7 @@
 export default function VideoPlayer({ video, setVideoPlayer }: {video: string | undefined, setVideoPlayer: (display: boolean) => void}) {
     const videoId = video?.split('v=')[1]?.split('&')[0];
     const embedUrl = videoId ? `https://www.youtube.com/embed/${videoId}` : '';
-
+    console.log("video link: ", video);
     return (
         <div className="fixed top-0 left-0 w-full h-full bg-black bg-opacity-50 flex justify-center items-center">
             <div className="max-h-screen bg-white rounded-lg p-5">
